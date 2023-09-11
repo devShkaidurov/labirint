@@ -1,6 +1,8 @@
 import '../styles/register.css';
 import { useState } from 'react';
 import { serverHook } from '../hooks/serverConnector';
+import eye from '../images/other/eye.svg';
+import eye_slash from '../images/other/eye-slash.svg';
 
 function Register() {
     const [pass, setPass] = useState("");
@@ -24,11 +26,15 @@ function Register() {
         setPass(e.target.value);
     }
 
+    function watchPassword (e) {
+        console.dir(e);
+    }
+
     return (
         <div id="body_for_register">
             <div id="container_for_register">
                 <div id="header">
-                    <span id="header_span">Авторизация</span>
+                    <span id="header_span">Регистрация</span>
                 </div>
 
                 <div id="main">
@@ -40,18 +46,21 @@ function Register() {
 
                         <div id="pass_block">
                             <span>Пароль</span>
-                            <div className="container-input"><input type="password" placeholder='Придумайте пароль' onChange={handleChangePass}></input></div>
+                            <div className="container-input">
+                                <input type="password" placeholder='Придумайте пароль' onChange={handleChangePass}></input>
+                                <img src={eye} className="icon_for_password" onClick={watchPassword}></img>
+                            </div>
                         </div>
                     </div>
 
                     <div id="register_enter" onClick={handleEnter}>
-                        <button>Вход</button>
+                        <button>Регистрация</button>
                     </div>
                 </div>
 
 
                 <div id="footer">
-                    <span>Уже есть аккаунт?</span><button>Авторизация</button>
+                    <span>Уже есть аккаунт?</span><button>Войти</button>
                 </div>
             </div>
         </div>

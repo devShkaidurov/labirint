@@ -14,13 +14,17 @@ span {
     justify-content: center;
     align-items: center;
     background-color: rgba(0, 0, 255, 0.377);
+    animation: gradient 15s linear infinite;
+    background-position: 0% 0%;
+    background: linear-gradient(to right,rgba(203,160,228,1) 0%, rgba(116,62,218,1) 31%, rgba(97,70,176,1) 53%, rgba(203,160,228,1) 88%);
+    background-size: 500% auto;
 }
 
 #container_for_register {
     background: rgb(100,49,130);
     background: linear-gradient(0deg, rgba(100,49,130,1) 0%, rgba(84,53,140,1) 35%, rgba(53,69,140,1) 100%);
     border-radius: 50px;
-    box-shadow: 0px 0px 15px blue;
+    box-shadow: 0px 0px 10px blue;
     min-width: 35%;
     min-height: 50%;
     display: flex;
@@ -97,21 +101,22 @@ span {
 }
 
 #register_enter {
-    top: 50px;
-    background-color: #315582;
-    border-radius: 10px;
+    margin-top: 10px;
+    background-color: #3a3182;
+    border-radius: 50px;
     padding: 5px 15px 5px 15px;
     box-shadow: 0px 0px 5px #141494;
-    transition: 0.3s;
+    transition: 0.1s;
 }
 
 #register_enter:hover {
     box-shadow: 0px 0px 10px black;
-    transition: 0.3s;
+    transition: 0.1s;
 }
 
 #register_enter:active {
-    background-color: #35458C;
+    color: #35458C;
+    background-color: #565e80;
     scale: 1.05;
 }
 
@@ -162,7 +167,7 @@ span {
     max-width: 400px;
     margin: 0px 0px 15px 15px;
     border-radius: 2px;
-    padding: 1.4rem 2rem 1.6rem;
+    padding: 1rem 1.4rem 1.2rem;
     background: rgba(57, 63, 84, 0.8);
 }
 
@@ -196,12 +201,18 @@ span {
 
 .container-input input::-webkit-input-placeholder {
     color: #7881A1;
-  }
+}
 
 
 @keyframes gradient { 
     0%{background-position:0 0}
     100%{background-position:100% 0}
-  }
+}
 
+.icon_for_password {
+    position: absolute;
+    right: 5%;
+    top: 36%;
+    cursor: pointer;
+}
 
