@@ -17,8 +17,8 @@ span {
 }
 
 #container_for_register {
-    background: rgb(5,0,95);
-    background: linear-gradient(0deg, rgba(5,0,95,1) 0%, rgba(0,10,255,1) 40%, rgba(101,0,255,1) 96%);
+    background: rgb(100,49,130);
+    background: linear-gradient(0deg, rgba(100,49,130,1) 0%, rgba(84,53,140,1) 35%, rgba(53,69,140,1) 100%);
     border-radius: 50px;
     box-shadow: 0px 0px 15px blue;
     min-width: 35%;
@@ -34,6 +34,8 @@ span {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-bottom: 35px;
+    margin-top: 10px;
 }
 
 #header span {
@@ -53,12 +55,14 @@ span {
 @media (max-width: 1000px) {
     #login_block {
         flex-direction: column;
-        margin-bottom: 10px;
+        margin-bottom: 10%;
+        margin-left: 0px !important;
     }
 
     #pass_block {
         flex-direction: column;
-        margin-bottom: 10px;
+        margin-bottom: 10%;
+        margin-left: 0px !important;
     }
 
     #footer {
@@ -68,6 +72,19 @@ span {
     #container_for_register {
         min-width: 90%;
         min-height: 90%;
+    }
+
+    .container-input {
+        margin: 0 auto !important;
+    }
+
+    
+    #login_block span {
+        margin-bottom: 10px;
+    }
+
+    #pass_block span {
+        margin-bottom: 10px;
     }
 }
 
@@ -81,16 +98,28 @@ span {
 
 #register_enter {
     top: 50px;
-    background-color: rgb(0, 89, 255);
+    background-color: #315582;
     border-radius: 10px;
     padding: 5px 15px 5px 15px;
     box-shadow: 0px 0px 5px #141494;
+    transition: 0.3s;
+}
+
+#register_enter:hover {
+    box-shadow: 0px 0px 10px black;
+    transition: 0.3s;
+}
+
+#register_enter:active {
+    background-color: #35458C;
+    scale: 1.05;
 }
 
 #pass_block {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 15px;
 }
 
 #login_block {
@@ -98,22 +127,7 @@ span {
     justify-content: space-between;
     align-items: center;
     margin-left: 10px;
-    margin-bottom: 10px;
-}
-
-#login_block input {
-    width: 200px;
-    font-size: 15pt;
-    font-family: AdventPro;
-    margin-bottom: 10px;    
-
-}
-
-#pass_block input {
-    width: 200px;
-    font-size: 15pt;
-    font-family: AdventPro;
-    margin-left: 10px;
+    margin-bottom: 15px;
 }
 
 #footer {
@@ -123,6 +137,7 @@ span {
     min-height: 50px;
     align-items: center;
     margin-bottom: 10px;
+    margin-top: 25px;
 }
 
 #footer span {
@@ -139,5 +154,54 @@ span {
     text-decoration: underline;
 }
 
+
+.container-input {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    max-width: 400px;
+    margin: 0px 0px 15px 15px;
+    border-radius: 2px;
+    padding: 1.4rem 2rem 1.6rem;
+    background: rgba(57, 63, 84, 0.8);
+}
+
+.container-input::after {
+    content: "";
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    z-index: 999;
+    height: 2px;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+    background-position: 0% 0%;
+    background: linear-gradient(to right, #B294FF, #57E6E6, #FEFFB8, #57E6E6, #B294FF, #57E6E6);
+    background-size: 500% auto;
+    animation: gradient 3s linear infinite;
+}
+
+.container-input input {
+    flex-grow: 1;
+    color: #BFD2FF;
+    font-size: 16pt;
+    vertical-align: middle;
+    border: none;
+    font-family: 'AdventPro';
+    border-style: none; 
+    background: transparent; 
+    outline: none; 
+}
+
+.container-input input::-webkit-input-placeholder {
+    color: #7881A1;
+  }
+
+
+@keyframes gradient { 
+    0%{background-position:0 0}
+    100%{background-position:100% 0}
+  }
 
 
