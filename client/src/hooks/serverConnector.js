@@ -2,6 +2,8 @@ export const serverHook = () => {
 
     function registerUser (payload) {
         return new Promise ((res, rej) => {
+            res();
+            return;
             const url = 'http://127.0.0.1:7171/register';
             fetch(url, {
                 method: "POST",
@@ -22,6 +24,8 @@ export const serverHook = () => {
 
     function authUser (payload) {
         return new Promise ((res, rej) => {
+            res();
+            return;
             const url = 'http://127.0.0.1:7171/auth';
             fetch(url, {
                 method: "POST",
