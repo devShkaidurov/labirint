@@ -1,0 +1,52 @@
+@keyframes error-slider {
+    0% {
+        transform:translateX(-100%)
+    }
+
+    100% {
+        transform:translateX(0%)
+    }
+}
+
+#div-noty {
+    display: block;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    margin: 0px 0px 25px 25px;
+    background: red;
+    padding: 5px;
+    border-left: solid 3px white;
+    box-shadow: 1px 1px 5px #7d6e6e;
+    animation: error-slider 1s ease-in 1;
+    transition: 0.5s;
+    font-family: revert;
+    font-size: 16pt;
+    color: white;
+}
+
+
+@media (max-width: 1000px) {
+    #div-noty {
+        margin: 0px 0px 5px 20px;
+    }
+}
+
+.close-div-noty { 
+    animation: close-div-noty-anim 1s ease-in 1 !important;
+}
+
+.close-div-noty::after {
+    display: none !important;
+}
+
+@keyframes close-div-noty-anim {
+    0% {
+        transform:translateX(0%)
+    }
+
+    100% {
+        transform:translateX(-100%)
+    }
+}
+

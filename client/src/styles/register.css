@@ -16,7 +16,7 @@ span {
     background-color: rgba(0, 0, 255, 0.377);
     animation: gradient 15s linear infinite;
     background-position: 0% 0%;
-    background: linear-gradient(to right,rgba(203,160,228,1) 0%, rgba(116,62,218,1) 31%, rgba(97,70,176,1) 53%, rgba(203,160,228,1) 88%);
+    background: linear-gradient(to right,rgba(215,146,229,1) 0%, rgba(143,116,224,1) 50%, rgba(215,146,229,1) 100%);
     background-size: 500% auto;
 }
 
@@ -204,10 +204,6 @@ span {
 }
 
 
-@keyframes gradient { 
-    0%{background-position:0 0}
-    100%{background-position:100% 0}
-}
 
 .icon_for_password {
     position: absolute;
@@ -216,3 +212,25 @@ span {
     cursor: pointer;
 }
 
+
+.error_data::after {
+    content: "";
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    z-index: 999;
+    height: 2px;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+    background-position: 0% 0%;
+    background: linear-gradient(to right, rgba(255,124,124,1) 0%, rgba(181,19,19,1) 50%, rgba(255,124,124,1) 100%);
+    background-size: 500% auto;
+    animation: gradient 3s linear infinite;
+}
+
+
+@keyframes gradient { 
+    0%{background-position:0 0}
+    100%{background-position:100% 0}
+}
