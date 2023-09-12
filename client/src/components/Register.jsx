@@ -27,12 +27,12 @@ function Register() {
         if (isRegister) {
             connector.registerUser({password: pass, login: login}).then(ans => {
                 console.dir(ans);
-                navigate("/main");
+                navigate("/game");
             })
         } else {
             connector.authUser({password: pass, login: login}).then(ans => {
                 console.dir(ans);
-                navigate("/main");
+                navigate("/game");
             })
         }
     }
