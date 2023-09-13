@@ -1,34 +1,20 @@
-const http = require('http');
+const express = require('express');
+const app = express();
+const port = 7171;
 
-http.createServer(function (request, response) {
-  if (request.url === "/auth") {
-    console.log("Server auth...");
-    let data = "";
-        request.on("data", chunk => {
-            data += chunk;
-        });
-        request.on("end", () => {
-            console.log(JSON.parse(data));
-            response.end("Данные успешно получены");
-        });
-  } 
-  
-  else if (request.url === "/regiser") {
-    console.log("Register...");
-    let data = "";
-        request.on("data", chunk => {
-            data += chunk;
-        });
-        request.on("end", () => {
-            console.log(JSON.parse(data));
-            response.end("Данные успешно получены");
-        });
-  } 
-  
-  else {
-    response.statusCode = 404;
-    response.write("Not Found");
-  }
+app.post('/auth', (req, res) => {
+  let data = "";
+  req.on("data", chunk => {
+      data += chunk;
+  });
+  req.on("end", () => {
+      console.log(JSON.parse(data));
+  });
 
-  response.end();
-}).listen(7171);
+  res.statusCode = 200;
+  res.end(JSON.stringify({message: "Hello from server!"}));
+});
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
