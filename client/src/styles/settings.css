@@ -1,0 +1,17 @@
+#header-settings {
+    position: relative;
+    height: 50px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#header-settings button {
+    position: absolute;
+    border: none;
+    background: none;
+    top: 30%;
+    right: 1%;
+    cursor: pointer;
+}

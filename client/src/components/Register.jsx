@@ -4,7 +4,6 @@ import { serverHook } from '../hooks/serverConnector';
 import eye from '../images/other/eye.svg';
 import eye_slash from '../images/other/eye-slash.svg';
 import Noty from './Noty';
-import { Main } from './Main';
 import { useNavigate } from 'react-router-dom';
 
 function Register() {
@@ -27,12 +26,12 @@ function Register() {
         if (isRegister) {
             connector.registerUser({password: pass, login: login}).then(ans => {
                 console.dir(ans);
-                // navigate("/game");
+                navigate("/game");
             })
         } else {
             connector.authUser({password: pass, login: login}).then(ans => {
                 console.dir(ans);
-                // navigate("/game");
+                navigate("/game");
             })
         }
     }

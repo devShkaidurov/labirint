@@ -45,3 +45,77 @@ td {
     display: block;
     content: url('../images/sprite_labirint/123.jpg');
 }
+
+#settings {
+    position: absolute;
+    height: 99%;
+    left: 0;
+    top: 0.5%;
+    background: #6ea9dd;
+    border-radius: 0px 15px 15px 0px;
+    box-shadow: 0px 0px 5px black;
+}
+
+.unactive-settings {
+    transform: translateX(-120%);
+}
+
+.active-settings {
+    width: 25%;
+    min-width: 250px;
+}
+
+.animation-close-settings {
+   animation: anim-close-settings 1s ease 1;
+}
+
+.animation-open-settings {
+    animation: anim-open-settings 1s ease 1;
+ }
+
+@keyframes anim-close-settings {
+    100% {
+        transform: translateX(-120%);
+    }
+}
+
+@keyframes anim-open-settings {
+    0% {
+        transform: translateX(-120%);
+    }
+    
+    100% {
+        transform: translateX(0%);
+        width: 25%;
+    }
+}
+
+#bars {
+    display: none;
+    position: absolute;
+    left: 15px;
+    top: 15px;
+    cursor: pointer;
+}
+
+.active-bar {
+    display: block !important;
+    animation: bars-opener 1s ease 1;
+}
+
+@keyframes bars-opener {
+    0% {
+        transform: translateX(-150%);
+    }
+}
+
+.unactive-bar {
+    animation: bars-closer 1s ease 1;
+}
+
+@keyframes bars-closer {
+    100% {
+        display: none !important;
+        transform: translateX(-200%);
+    }
+}
