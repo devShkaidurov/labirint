@@ -1,0 +1,60 @@
+#options-map {
+    position: absolute;
+    display: block;
+    width: 400px;
+    height: 500px;
+    left: 3%;
+    background: #305252;
+    border-radius: 15px;
+}
+
+#option-map-header {
+    color: white;
+    font-size: 16pt;
+    font-family: AdventPro;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    height: 50px;
+    align-items: center;
+}
+
+#option-map-options {
+
+}
+
+.option-row-col {
+    width: 90%;
+    left: 5%;
+    position: relative;
+    display: flex;
+    background-color: black;
+    flex-direction: column;
+    border-radius: 5px;
+    align-items: flex-start;
+    justify-content: space-around;
+    margin-bottom: 15px;
+    padding: 7px 0px 7px 0px;
+}
+
+.option-row-col div {
+    left: 15px;
+    position: relative;
+}
+
+.option-row-col span {
+    font-size: 14pt;
+}
+
+.option-row-col input[type=text] {
+    font-family: AdventPro;
+    left: 75px;
+    font-size: 10pt;
+    position: absolute;
+}
+
+#option-map-options label {
+    font-family: AdventPro;
+    font-size: 14pt;
+    color: white;
+}

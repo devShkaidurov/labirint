@@ -1,0 +1,90 @@
+table, th, td {
+    border: solid 1px black;
+}
+
+td {
+    padding: none;
+    margin: none;
+
+}
+
+#chooser-container {
+    display: none;
+    width: 500px;
+    height: 250px;
+    background-color: rgb(119, 0, 255);
+    border-radius: 15px;
+    box-shadow: 0px 0px 15px rgb(92, 92, 92);
+    /* display: flex; */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (max-width: 600px) {
+    #chooser-container {
+        width: 90%;
+        padding: 10px;
+    }
+}
+
+#chooser-container button:first-child {
+    margin-bottom: 25px;
+}
+
+#chooser-container button {
+    border: none;
+    background-color: #156bc1;
+    border-radius: 5px;
+    color: #c6d9ec;
+    font-size: 20pt;
+    font-family: AdventPro;
+    padding: 15px 25px 15px 25px;
+    box-shadow: 0px 0px 22px rgba(88, 147, 206, 0.4);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#chooser-container button:hover {
+    color: #c6d9ec;
+    background-color: #2c83da;
+
+}
+
+#chooser-container button:active {
+    color: #156bc1;
+    background-color: #c6d9ec;
+    transition: 0.3s;
+}
+
+#options-map {
+    position: absolute;
+    display: none;
+    width: 300px;
+    height: 500px;
+    left: 3%;
+    background: #305252;
+    border-radius: 15px;
+}
+
+#map-container {
+    display: block;
+    min-height: 700px;
+    min-width: 700px;
+    max-height: 700px;
+    max-width: 700px;
+    background-color: #156bc1;
+}
+
+
+.wall {
+    background-color: rgb(175, 149, 0);
+}
+
+
+.wall img {
+    height: 100%;
+    width: 100%;
+    display: block;
+    content: url('../images/sprite_labirint/123.jpg');
+}

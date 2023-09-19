@@ -4,6 +4,7 @@ import './styles/index.css';
 import Register from './components/Register';
 import { Main } from './components/Main';
 import { NotFoundPage } from './components/NotFoundPage';
+import { AdminWindow } from './components/AdminWindow';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 export default function App() {
@@ -12,6 +13,7 @@ export default function App() {
             <Routes>
                 <Route path="/" element={<Register/>}/>
                 <Route path="game" element={<Main/>}/>
+                <Route path="admin" element={<AdminWindow/>}/>
                 <Route path="*" element={<NotFoundPage/>}/>
             </Routes>
         </BrowserRouter>

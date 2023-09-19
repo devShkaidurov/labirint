@@ -40,9 +40,30 @@ export const serverHook = () => {
         })
     }
 
+    function createMaze (payload) {
+        console.dir(payload);
+        return new Promise ((res, rej) => {
+            const url = 'http://127.0.0.1:7171/maze';
+            fetch(url, {
+                method: "POST",
+                body: JSON.stringify(payload)
+            }).then(ans => {
+                res(ans);
+            }, reject => {
+                console.dir(reject);
+                rej(reject);
+            })
+            .catch(e => {
+                console.dir(e);
+                rej(e);
+            })
+        })
+    }
+
 
     return {
         registerUser,
-        authUser
+        authUser,
+        createMaze,
     }
 }
