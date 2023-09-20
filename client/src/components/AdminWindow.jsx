@@ -2,10 +2,12 @@ import '../styles/admin.css';
 import { OptionsMap } from './OptionsMap';
 import { serverHook } from '../hooks/serverConnector';
 import { useState } from 'react';
+import Noty from './Noty';
 
 export const AdminWindow = () => {
     const connector = serverHook();
     const [map, setMap] = useState();
+    const notitier = new Noty();
 
     const handleCreateMap = () => {
         document.getElementById("chooser-container").style.display = "none";
@@ -40,9 +42,15 @@ export const AdminWindow = () => {
                     {
                         map?.map((array, indexOuter) => {
                             let row = array.map((item, index) => {
-                                if (item.isWall) 
+                                
+                                 if (item.visit) {
                                     return (
-                                        <td key={index} className="wall"style={{height: `${700 / map.lenght}px`}}><img></img></td>
+                                        <td key={index} style={{height: `${700 / map.lenght}px`, backgroundColor: "green"}}></td>
+                                    )
+                                }
+                                else if (item.isWall) 
+                                    return (
+                                        <td key={index} className="wall" style={{height: `${700 / map.lenght}px`}}><img></img></td>
                                     )
                                 else 
                                     return (
