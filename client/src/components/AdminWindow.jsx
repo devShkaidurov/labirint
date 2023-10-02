@@ -28,6 +28,13 @@ export const AdminWindow = () => {
         })
     }
 
+    const handleStep = () => {
+        connector.doStep().then(async (ans) => {
+            const result = await ans.json();
+            setMap(result);
+        })
+    }
+
     return (
         <div id="main_bg">
             <div id="chooser-container">
@@ -69,6 +76,7 @@ export const AdminWindow = () => {
                 </table>
             </div>
             <OptionsMap handleCreateMaze={handleCreateMaze}/>
+            <button onClick={handleStep}>Шаг</button>
         </div>
     )
 }

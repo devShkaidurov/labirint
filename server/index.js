@@ -5,6 +5,7 @@ const Maze = require('./Maze/maze');
 
 app.use(express.json());
 
+const maze = new Maze();
 
 app.post('/maze', (req, response) => {
   let data = "";
@@ -13,15 +14,19 @@ app.post('/maze', (req, response) => {
   });
   req.on("end", () => {
       const sizes = JSON.parse(data);
-      const maze = new Maze();
       const map = maze.generate(sizes.x, sizes.y);
 
       response.setHeader("Content-Type", "application/json");
       response.end(JSON.stringify(map));
   });
-
-  
 });
+
+app.get('/step', (req, response) => {
+  const map = maze.step();
+  response.setHeader("Content-Type", "application/json");
+  response.end(JSON.stringify(map));
+  
+})
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

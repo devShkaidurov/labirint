@@ -3,6 +3,8 @@ class Maze {
 
     }
 
+    map = null;
+
     // n, m - размеры лабиринта
     // x, y - координаты точки, которую нужно проверить
     checkOnValidSell (n, m, x, y) {
@@ -21,13 +23,14 @@ class Maze {
     }
 
     addToVisit (map, needToVisit, x, y) {
+        let counter = 0;
         if (this.pointInMaze(map, x - 2, y) && map[x - 2][y].isWall) {
             needToVisit.push({
                 x: x - 2,
                 y: y
             });
-
-            // map[x - 2][y] = { isWall: true, visit: true}
+            map[x - 2][y] = { isWall: false };
+            counter++;
         }
 
         if (this.pointInMaze(map, x + 2, y) && map[x + 2][y].isWall) {
@@ -35,7 +38,8 @@ class Maze {
                 x: x + 2,
                 y: y
             });
-            // map[x + 2][y] = { isWall: true, visit: true}
+            map[x + 2][y] = { isWall: false };
+            counter++;
         }
 
         
@@ -44,7 +48,8 @@ class Maze {
                 x: x,
                 y: y + 2
             });
-            // map[x][y + 2] = { isWall: true, visit: true}
+            map[x][y + 2] = { isWall: false };
+            counter++;
         }
 
         if (this.pointInMaze(map, x, y - 2) && map[x][y - 2].isWall) {
@@ -52,7 +57,8 @@ class Maze {
                 x: x,
                 y: y - 2
             });
-            // map[x][y - 2] = { isWall: true, visit: true}
+            map[x][y - 2] = { isWall: false };
+            counter++;
         }
     }
 
@@ -81,72 +87,72 @@ class Maze {
         return array;
     } 
 
-    connect (map, x, y) {
+    connect (map, x, y,needToVisit) {
         let directions = [
             {x: 0, y: -1},
+            {x: 1, y: 0},
             {x: 0, y: 1},
-            {x: -1, y: 0},
-            {x: 1, y: 0}
+            {x: -1, y: 0}
         ];
 
-        directions = this.shuffle(directions);
-
-        for (let i = 0; i < directions.length; i++) {
-            const neighborX = x + directions[i].x * 2;
-            const neighborY = y + directions[i].y * 2;
-
-            if (this.pointInMaze(map, neighborX, neighborY) && !map[neighborX][neighborY].isWall) {
-                const connectX = x + directions[i].x;
-                const connectY = y + directions[i].y;
-                map[connectX][connectY] = { isWall: false };
-                console.log("X: " + connectX, " | Y: " + connectY);
-                console.log(directions[i]);
+        let isFind = false;
+        directions.forEach(item => {
+            if (isFind)
                 return;
+            const neighborX = x + item.x * 2;
+            const neighborY = y + item.y * 2;
+
+            if (this.pointInMaze(map, neighborX, neighborY) && !map[neighborX][neighborY].isWall && !this.overlap(needToVisit, {x: neighborX, y: neighborY})) {
+                const connectX = x + item.x;
+                const connectY = y + item.y;
+                map[connectX][connectY] = { isWall: false };
+                console.dir(item);
+                isFind = true;
             }
-        }
+        });
     }
 
-    generate(n, m) {
+    overlap (array, second) {
+        let isOverlap = false;
+        array.forEach(first => {
+            if (first.x === second.x && first.y === second.y) {
+                isOverlap = true;
+            }
+        });
+        return isOverlap;
+    }
+
+    generate(x, y) {
         // generate empty map
-        const map = new Array(n);
+        const map = new Array(x);
         const needToVisit = [];
-        for (let i = 0; i < n; i++) {
-            map[i] = new Array(m);
-            for (let j = 0; j < m; j++) {
+        for (let i = 0; i < x; i++) {
+            map[i] = new Array(y);
+            for (let j = 0; j < y; j++) {
                 map[i][j] = { isWall: true }
             }
         }
     
         // get random point
-        const randomRow = this.randomEvenInt(0, n - 1);
-        const randomColumn = this.randomEvenInt(0, m - 1);
+        const randomColumn = this.randomEvenInt(0, x - 1);
+        const randomRow    = this.randomEvenInt(0, y - 1);   
 
-        map[randomRow][randomColumn] = { isWall: false };
-        console.log("X: " + randomRow, " | Y: " + randomColumn);
+        map[randomColumn][randomRow] = { isWall: false };
+        this.addToVisit(map, needToVisit, randomColumn, randomRow);
 
-        this.addToVisit(map, needToVisit, randomRow, randomColumn);
-
-        let k = 2;
         while (needToVisit.length > 0) {
             const randomIndex = Math.floor(Math.random() * needToVisit.length);
             const x = needToVisit[randomIndex].x;
             const y = needToVisit[randomIndex].y;
             
-            map[x][y] = { isWall: false };
-            console.log("X: " + x, " | Y: " + y);
-            this.connect(map, x, y);
-
             needToVisit.splice(randomIndex, 1);
+
+            this.connect(map, x, y, needToVisit);
             this.addToVisit(map, needToVisit, x, y);
-            k--;
         }
 
         return map;
     }
-
-    
-
-
 }
 
 module.exports = Maze;

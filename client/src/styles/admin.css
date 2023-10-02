@@ -1,11 +1,10 @@
-table, th, td {
-    border: solid 1px black;
+td {
+    padding: 0px;
+    margin: 0px;
 }
 
-td {
-    padding: none;
-    margin: none;
-
+table {
+    border-spacing: 0px !important;
 }
 
 #chooser-container {
@@ -77,7 +76,7 @@ td {
 
 
 .wall {
-    background-color: rgb(175, 149, 0);
+    /* background-color: rgb(175, 149, 0); */
 }
 
 
