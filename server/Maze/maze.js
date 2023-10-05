@@ -88,7 +88,7 @@ class Maze {
     } 
 
     connect (map, x, y,needToVisit) {
-        let directions = [
+        const directions = [
             {x: 0, y: -1},
             {x: 1, y: 0},
             {x: 0, y: 1},
@@ -106,7 +106,6 @@ class Maze {
                 const connectX = x + item.x;
                 const connectY = y + item.y;
                 map[connectX][connectY] = { isWall: false };
-                console.dir(item);
                 isFind = true;
             }
         });
@@ -122,6 +121,65 @@ class Maze {
         return isOverlap;
     }
 
+    setStartFinish (map) {
+        const width = map.length - 1;
+        const height = map[0].length - 1;
+
+        const sides = [
+            {x1: 0, y1: 1, x2: 0, y2: height - 1},
+            {x1: 1, y1: 0, x2: width - 1, y2: 0},
+            {x1: width, y1: 1, x2: width, y2: height - 1},
+            {x1: 1, y1: height, x2: width - 1, y2: height},
+        ];
+
+        const directions = [
+            {x: 0, y: -1},
+            {x: 1, y: 0},
+            {x: 0, y: 1},
+            {x: -1, y: 0}
+        ];
+
+        let okStart = false;
+        let okFinish = false;
+        let side;
+        let startX;
+        let startY;
+        let finishX;
+        let finishY;
+
+        while(!okStart || !okFinish) {
+            side = sides[Math.round(Math.random() * 3)];            // get random side
+            startX = this.randomIntFromInterval(side.x1, side.x2)   // get random x in side
+            startY = this.randomIntFromInterval(side.y1, side.y2)   // get random y in side
+
+            // check start cell on valid
+            directions.forEach(direct => {
+                if (this.pointInMaze(map, startX + direct.x, startY + direct.y) && !map[startX + direct.x][startY + direct.y].isWall) {
+                    okStart = true;
+                }
+            });
+
+                
+            // calculate finish
+            finishX = width - startX;
+            finishY = height - startY;
+
+            // check finish cell on valid
+            directions.forEach(direct => {
+                if (this.pointInMaze(map, finishX + direct.x, finishY + direct.y) && !map[finishX + direct.x][finishY + direct.y].isWall) {
+                    okFinish = true;
+                }
+            });
+        }
+
+        map[startX][startY] = { isStart: true, isCurrent: true};
+        map[finishX][finishY] = { isFinish: true };
+    }
+
+    randomIntFromInterval(min, max) { 
+        return Math.floor(Math.random() * (max - min + 1) + min)
+    }
+ 
     generate(x, y) {
         // generate empty map
         const map = new Array(x);
@@ -151,6 +209,7 @@ class Maze {
             this.addToVisit(map, needToVisit, x, y);
         }
 
+        this.setStartFinish(map);
         return map;
     }
 }

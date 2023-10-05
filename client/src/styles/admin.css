@@ -76,13 +76,21 @@ table {
 
 
 .wall {
-    /* background-color: rgb(175, 149, 0); */
+    background-color: black;
 }
 
+.start {
+    background-color: red;
+}
 
-.wall img {
-    height: 100%;
-    width: 100%;
-    display: block;
-    content: url('../images/sprite_labirint/123.jpg');
+.finish {
+    background-color: green;
+}
+
+#person {
+    width: 50%;
+    height: 50%;
+    background-color: #156bc1;
+    left: 25%;
+    position: relative;
 }

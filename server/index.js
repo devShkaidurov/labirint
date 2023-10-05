@@ -21,13 +21,6 @@ app.post('/maze', (req, response) => {
   });
 });
 
-app.get('/step', (req, response) => {
-  const map = maze.step();
-  response.setHeader("Content-Type", "application/json");
-  response.end(JSON.stringify(map));
-  
-})
-
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })

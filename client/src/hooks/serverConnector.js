@@ -60,27 +60,10 @@ export const serverHook = () => {
         })
     }
 
-    function doStep () {
-        return new Promise ((res, rej) => {
-            const url = 'http://127.0.0.1:7171/step';
-            fetch(url).then(ans => {
-                res(ans);
-            }, reject => {
-                console.dir(reject);
-                rej(reject);
-            })
-            .catch(e => {
-                console.dir(e);
-                rej(e);
-            })
-        })
-    }
-
 
     return {
         registerUser,
         authUser,
         createMaze,
-        doStep
     }
 }
