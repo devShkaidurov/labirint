@@ -14,7 +14,8 @@ app.post('/maze', (req, response) => {
   });
   req.on("end", () => {
       const sizes = JSON.parse(data);
-      const map = maze.generate(sizes.x, sizes.y);
+      // const map = maze.generatePrime(sizes.x, sizes.y);
+      const map = maze.generateBT(sizes.x, sizes.y);
 
       response.setHeader("Content-Type", "application/json");
       response.end(JSON.stringify(map));

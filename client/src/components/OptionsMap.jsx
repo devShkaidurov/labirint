@@ -29,7 +29,7 @@ export const OptionsMap = (props) => {
 
     const handleEnterRow = (e) => {
         const value = e.target.value;
-        if (value >= 9 && value <= 51) {
+        if (value >= 9 && value <= 1511) {
             if (value % 2 == 1) {
                 setRow(value);
             } else {
@@ -42,7 +42,7 @@ export const OptionsMap = (props) => {
 
     const handleEnterCol = (e) => {
         const value = e.target.value;
-        if (value >= 9 && value <= 51) {
+        if (value >= 9 && value <= 1511) {
             if (value % 2 == 1) {
                 setCol(value);
             } else {
@@ -54,8 +54,7 @@ export const OptionsMap = (props) => {
     }
 
     const handleCreateMaze = () => {
-        console.dir({x: row, y: col});
-        props.handleCreateMaze({x: row, y: col});
+        props.handleCreateMaze({x: col, y: row});
     }
 
     return (

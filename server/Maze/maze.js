@@ -23,14 +23,12 @@ class Maze {
     }
 
     addToVisit (map, needToVisit, x, y) {
-        let counter = 0;
         if (this.pointInMaze(map, x - 2, y) && map[x - 2][y].isWall) {
             needToVisit.push({
                 x: x - 2,
                 y: y
             });
             map[x - 2][y] = { isWall: false };
-            counter++;
         }
 
         if (this.pointInMaze(map, x + 2, y) && map[x + 2][y].isWall) {
@@ -39,7 +37,6 @@ class Maze {
                 y: y
             });
             map[x + 2][y] = { isWall: false };
-            counter++;
         }
 
         
@@ -49,7 +46,6 @@ class Maze {
                 y: y + 2
             });
             map[x][y + 2] = { isWall: false };
-            counter++;
         }
 
         if (this.pointInMaze(map, x, y - 2) && map[x][y - 2].isWall) {
@@ -58,7 +54,6 @@ class Maze {
                 y: y - 2
             });
             map[x][y - 2] = { isWall: false };
-            counter++;
         }
     }
 
@@ -180,7 +175,9 @@ class Maze {
         return Math.floor(Math.random() * (max - min + 1) + min)
     }
  
-    generate(x, y) {
+    generatePrime(x, y) {
+        console.dir(x);
+        console.dir(y);
         // generate empty map
         const map = new Array(x);
         const needToVisit = [];
@@ -211,6 +208,107 @@ class Maze {
 
         this.setStartFinish(map);
         return map;
+    }
+
+    generateBT (x, y) {
+        // x - это высота
+        // y - это по длине
+        const unvisited = [];
+        const stack = [];
+        const map = new Array(x);
+        for (let i = 0; i < x; i++) {
+            map[i] = new Array(y);
+            for (let j = 0; j < y; j++) {
+                if (i % 2 != 0 && j % 2 != 0) {
+                    map[i][j] = { isWall: false };
+                    unvisited.push({x: i, y: j});
+                } else {
+                    map[i][j] = { isWall: true };
+                }
+            }
+        }
+        
+        // step 1
+        const startCell = unvisited[0];
+        unvisited.splice(0, 1);
+        let currentCell = startCell;
+
+        // step 2
+        while(unvisited.length > 0) {
+            console.dir(unvisited);
+            const neighbour = this.checkUnvisitedNeighbour(currentCell.x, currentCell.y, unvisited, map);
+            if (neighbour.length > 0) {
+                console.dir(neighbour.length)
+                stack.push(currentCell);
+                const rndIndex = Math.floor(Math.random() * neighbour.length);
+                const rndCell = neighbour[rndIndex];
+                console.dir(rndCell)
+                const {x, y} = this.getCoordBetween(currentCell.x, currentCell.y, rndCell.x, rndCell.y);
+                map[x][y] = { isWall: false };
+                unvisited.splice(unvisited.indexOf(this.getRemovedIndex(unvisited, rndCell)), 1);
+                currentCell = rndCell;
+            } else if (stack.length > 0) {
+                const lastCell = stack.pop();
+                currentCell = lastCell;
+            } 
+        }
+        return map;
+    }
+
+    getRemovedIndex (array, cell) {
+        let index = -1;
+        array.forEach((item, index) => {
+            if (index !== -1) 
+                return;
+            if (item.x == cell.x && item.y == cell.y) {
+                index = index;
+            }
+        })
+        return index;
+    }
+
+    getCoordBetween (x1, y1, x2, y2) {
+        let result;
+        if (x1 == x2) {
+            result = {x: x1, y: y2 > y1 ? y2 - 1 : y1 - 1};
+        } else if (y1 == y2) {
+            result = {x: x2 > x1 ? x2 - 1 : x1 - 1, y: y1};
+        }
+        console.dir("x1: " + x1 + " | y1: " + y1);
+        console.dir("x2: " + x2 + " | y2: " + y2);
+        console.dir("x3: " + result.x + " | y3: " + result.y);
+        console.dir("---------------------");
+        return result;
+
+        
+    }
+
+    checkUnvisitedNeighbour(x, y, array, map) {
+        const potentialHeighbours = [];
+
+        if (this.pointInMaze(map, x - 2, y)) 
+            potentialHeighbours.push({x: x - 2, y: y});
+        
+        if (this.pointInMaze(map, x + 2, y)) 
+            potentialHeighbours.push({x: x + 2, y: y});
+        
+        if (this.pointInMaze(map, x, y - 2)) 
+            potentialHeighbours.push({x: x, y: y - 2});
+
+        if (this.pointInMaze(map, x, y + 2)) 
+            potentialHeighbours.push({x: x, y: y + 2});
+
+        
+        const neighbour = [];
+        potentialHeighbours.forEach(item => {
+            array.forEach(item2 => {
+                if (item.x == item2.x && item.y == item2.y) {
+                    neighbour.push(item);
+                }
+            })
+        })
+
+        return neighbour;
     }
 }
 
