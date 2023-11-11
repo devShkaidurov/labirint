@@ -1,0 +1,134 @@
+#admin_bg {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background-color:antiquewhite ;
+}
+
+#admin_settings {
+    position: absolute;
+    background: #daecfc;
+    min-width: 250px;
+    width: 20%;
+    top: 14%;
+    left: 30px;
+    box-shadow: 0px 0px 5px;
+    border-radius: 10px;
+}
+
+#admin_maze {
+    position: absolute;
+    height: 80%;
+    width: 40%;
+    left: 30%;
+    top: 10%;
+    background-color: azure;
+}
+
+.admin_option {
+    min-width: 230px;
+    width: 90%;
+    min-height: 100px;
+    background: #97c2e7;
+    margin: 15px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 3px;
+    display: flex;
+    flex-direction: column;
+}
+
+.admin_option_header {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    height: 20px;
+}
+
+.admin_option_body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin-top: 10px;
+    margin-left: 5px;
+}
+
+#admin_settings_header {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    font-size: 19px;
+    font-family: cursive;
+}
+
+span, label {
+    font-family: cursive;
+}
+
+#admin_height {
+    margin-top: 5px;
+}
+
+#admin_height input {
+    margin-left: 10px;
+}
+
+#admin_width input {
+    margin-left: 5px;
+}
+
+.admin_option_body input[type="number"] {
+    font-size: 14px;
+    font-family: cursive;
+}
+
+#admin_settings_action {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-top: 10px;
+}
+
+#admin_settings_action button {
+    font-size: 16px;
+    font-family: cursive;
+    background: #97c2e7;
+    border-radius: 5px;
+    box-shadow: 0px 0px 3px;
+    border: none;
+    color: black;
+    cursor: pointer;
+}
+
+.blurArea {
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+label, input[type="radio"] {
+    cursor: pointer;
+}
+
+/* maze */
+td {
+    padding: 0px;
+    margin: 0px;
+}
+
+table {
+    border-spacing: 0px !important;
+}
+
+#admin_maze {
+    display: block;
+    min-height: 600px;
+    min-width: 600px;
+    max-height: 600px;
+    max-width: 600px;
+    background-color: #156bc1;
+}

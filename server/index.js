@@ -1,27 +1,54 @@
 const express = require('express');
 const app = express();
 const port = 7170;
-const Maze = require('./Maze/maze');
+const { init, authUser, registerUser } = require('./database');
 
 app.use(express.json());
 
-const maze = new Maze();
-
-app.post('/maze', (req, response) => {
+app.post('/register', (req, response) => {
   let data = "";
   req.on("data", chunk => {
       data += chunk;
   });
   req.on("end", () => {
-      const sizes = JSON.parse(data);
-      // const map = maze.generatePrime(sizes.x, sizes.y);
-      const map = maze.generateBT(sizes.x, sizes.y);
-
+      const payload = JSON.parse(data);
       response.setHeader("Content-Type", "application/json");
-      response.end(JSON.stringify(map));
+      registerUser(payload).then(res => {
+        response.end(JSON.stringify(res));
+      }, rej => {
+        response.end(JSON.stringify(rej));
+      })
+      .catch(err => {
+        response.end(JSON.stringify(err));
+      })
+  });
+});
+
+app.post('/auth', (req, response) => {
+  let data = "";
+  req.on("data", chunk => {
+      data += chunk;
+  });
+  req.on("end", async () => {
+      const payload = JSON.parse(data);
+      response.setHeader("Content-Type", "application/json");
+      authUser(payload).then(res => {
+        response.end(JSON.stringify(res));
+      }, rej => {
+        response.end(JSON.stringify(rej));
+      })
+      .catch(err => {
+        response.end(JSON.stringify(err));
+      })
   });
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  // init().then(() => {
+  //   console.log("Server has connected to database.")
+  // }, () => {
+  //   console.log("Server cannot connect to database. Server stopped! ");
+  //   app.close();
+  // });
+  console.log(`Server listening on port ${port}`)
 })
