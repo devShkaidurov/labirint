@@ -6,8 +6,8 @@ function handleCloseNoty () {
         if (divEl)
             document.getElementsByTagName("body")[0].removeChild(divEl);
     }
-
 }
+
 export function Show (text, type) {
     const divWrapper = document.createElement("div");
     const divEl = document.createElement("div");
@@ -29,6 +29,7 @@ export function Show (text, type) {
     
     document.getElementsByTagName("body")[0].appendChild(divWrapper);
     setTimeout(() => {
-        document.getElementsByTagName("body")[0].removeChild(divWrapper);
-    }, 5000);
+        if (Array.from(document.getElementsByTagName("body")[0].childNodes).includes(divWrapper))
+            document.getElementsByTagName("body")[0].removeChild(divWrapper);
+    }, 4000);
 }
