@@ -1,4 +1,5 @@
 import './adminPage.css';
+import { Show }  from '../Noty/Noty';
 import { useState } from 'react';
 
 export const AdminPage = () => {
@@ -10,6 +11,7 @@ export const AdminPage = () => {
     const [alg, setAlg] = useState();
     const [map, setMap] = useState();
 
+    Show("test test test", 'warning');
     const handleSetHeight = (e) => {
         const value = e.target.value;
         setHeight(value);
