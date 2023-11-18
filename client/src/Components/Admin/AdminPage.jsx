@@ -1,7 +1,7 @@
 import './adminPage.css';
 import { Show }  from '../Noty/Noty';
 import { handleCloseNoty }  from '../Noty/Noty';
-import { useState } from 'react';
+import { isValidElement, useState } from 'react';
 
 export const AdminPage = () => {
     const MAXVALUE = 19;
@@ -51,6 +51,20 @@ export const AdminPage = () => {
     }
 
     const handleChangeEntry = (e) => {
+        const startCell = Array.from(document.getElementsByClassName("start-cell"));
+        const finishCell = Array.from(document.getElementsByClassName("finish-cell"));
+
+        console.dir(startCell);
+        console.dir(finishCell);
+
+        if (startCell.length > 0) {
+            startCell[0].classList.remove('start-cell');
+        }
+
+        if (finishCell.length > 0) {
+            finishCell[0].classList.remove('finish-cell');
+        }
+
         const value = e.target.value;
         
         if (value === "handle") {
@@ -73,11 +87,14 @@ export const AdminPage = () => {
         }
     }
 
+    let startCell = {};
     const clickPotentialStart = (event) => {
         const wall = event.target;
         if (wall.classList.contains("potetial-start")) {
-            wall.classList.remove("potential-start");
+            wall.classList.remove("potetial-start");
             wall.classList.add("start-cell");
+            startCell.x = parseInt(wall.dataset.x);
+            startCell.y = parseInt(wall.dataset.y);
         }
         handleSetFinish();
     }
@@ -97,12 +114,11 @@ export const AdminPage = () => {
     const clickPotentialFinish = (event) => {
         const wall = event.target;
         if (wall.classList.contains("potetial-finish")) {
-            wall.classList.remove("potential-finish");
+            wall.classList.remove("potetial-finish");
             wall.classList.add("finish-cell");
         }
         handleCleanFinishWall();
     }
-
 
     const handleSetStart = () => {
         const adminSettings = document.getElementById("admin_settings");
@@ -136,13 +152,296 @@ export const AdminPage = () => {
             wall.removeEventListener('mouseout', removePotentialStart);
             wall.removeEventListener('click', clickPotentialStart)
         })
-
-        // set a new states
+        
+        const needToBlockCell = [];
+        if (startCell.x == 1 && startCell.y == 0) {
+            needToBlockCell.push({
+                x: 2,
+                y: 0
+            })
+            needToBlockCell.push({
+                x: 0,
+                y: 1
+            })
+            needToBlockCell.push({
+                x: 0,
+                y: 2
+            })
+        } else if (startCell.x == 2 && startCell.y === 0) {
+            needToBlockCell.push({
+                x: 3,
+                y: 0
+            })
+            needToBlockCell.push({
+                x: 1,
+                y: 0
+            })
+            needToBlockCell.push({
+                x: 0,
+                y: 1
+            })
+            needToBlockCell.push({
+                x: 0,
+                y: 2
+            })
+        } else if (startCell.x === width - 2 && startCell.y === 0) {
+            needToBlockCell.push({
+                x: width - 3,
+                y: 0
+            })
+            needToBlockCell.push({
+                x: width - 1,
+                y: 1
+            })
+            needToBlockCell.push({
+                x: width - 1,
+                y: 2
+            })
+        } else if (startCell.x === width - 3 && startCell.y == 0) {
+            needToBlockCell.push({
+                x: width - 4,
+                y: 0
+            })
+            needToBlockCell.push({
+                x: width - 2,
+                y: 0
+            })
+            needToBlockCell.push({
+                x: width - 1,
+                y: 1
+            })
+            needToBlockCell.push({
+                x: width - 1,
+                y: 2
+            })
+        } else if (startCell.x === 0 && startCell.y == 1) {
+            needToBlockCell.push({
+                x: 0,
+                y: 2
+            })
+            needToBlockCell.push({
+                x: 1,
+                y: 0
+            })
+            needToBlockCell.push({
+                x: 2,
+                y: 0
+            })
+        } else if (startCell.x === 0 && startCell.y === 2) {
+            needToBlockCell.push({
+                x: 0,
+                y: 1
+            })
+            needToBlockCell.push({
+                x: 0,
+                y: 3
+            })
+            needToBlockCell.push({
+                x: 1,
+                y: 0
+            })
+            needToBlockCell.push({
+                x: 2,
+                y: 0
+            })
+        } else if (startCell.x === width - 1 && startCell.y === 1) {
+            needToBlockCell.push({
+                x: width - 1,
+                y: 2
+            })
+            needToBlockCell.push({
+                x: width - 2,
+                y: 0
+            })
+            needToBlockCell.push({
+                x: width - 3,
+                y: 0
+            })
+        } else if (startCell.x === width - 1 && startCell.y === 2) {
+            needToBlockCell.push({
+                x: width - 1,
+                y: 1
+            })
+            needToBlockCell.push({
+                x: width - 1,
+                y: 3
+            })
+            needToBlockCell.push({
+                x: width - 2,
+                y: 0
+            })
+            needToBlockCell.push({
+                x: width - 3,
+                y: 0
+            })
+        } else if (startCell.x === 0 && startCell.y === height - 3) {
+            needToBlockCell.push({
+                x: 0,
+                y: height - 2
+            })
+            needToBlockCell.push({
+                x: 0,
+                y: height - 4
+            })
+            needToBlockCell.push({
+                x: 1,
+                y: height - 1
+            })
+            needToBlockCell.push({
+                x: 2,
+                y: height - 1
+            })
+        } else if (startCell.x === 0 && startCell.y === height - 2) {
+            needToBlockCell.push({
+                x: 0,
+                y: height - 3
+            })
+            needToBlockCell.push({
+                x: 1,
+                y: height - 1
+            })
+            needToBlockCell.push({
+                x: 2,
+                y: height - 1
+            })
+        } else if (startCell.x === 1 && startCell.y === height - 1) {
+            needToBlockCell.push({
+                x: 2,
+                y: height - 1
+            })
+            needToBlockCell.push({
+                x: 0,
+                y: height - 2
+            })
+            needToBlockCell.push({
+                x: 0,
+                y: height - 3
+            })
+        } else if (startCell.x === 2 && startCell.y === height - 1) {
+            needToBlockCell.push({
+                x: 1,
+                y: height - 1
+            })
+            needToBlockCell.push({
+                x: 3,
+                y: height - 1
+            })
+            needToBlockCell.push({
+                x: 0,
+                y: height - 2
+            })
+            needToBlockCell.push({
+                x: 0,
+                y: height - 3
+            })
+        } else if (startCell.x === width - 3 && startCell.y === height - 1) {
+            needToBlockCell.push({
+                x: width - 4,
+                y: height - 1
+            })
+            needToBlockCell.push({
+                x: width - 2,
+                y: height - 1
+            })
+            needToBlockCell.push({
+                x: width - 1,
+                y: height - 2
+            })
+            needToBlockCell.push({
+                x: width - 1,
+                y: height - 3
+            })
+        } else if (startCell.x === width - 2 && startCell.y === height - 1) {
+            needToBlockCell.push({
+                x: width - 3,
+                y: height - 1
+            })
+            needToBlockCell.push({
+                x: width - 1,
+                y: height - 2
+            })
+            needToBlockCell.push({
+                x: width - 1,
+                y: height - 3
+            })
+        } else if (startCell.x === width - 1 && startCell.y === height - 2) {
+            needToBlockCell.push({
+                x: width - 1,
+                y: height - 1
+            })
+            needToBlockCell.push({
+                x: width - 2,
+                y: height - 1
+            })
+            needToBlockCell.push({
+                x: width - 1,
+                y: height - 3
+            })
+            needToBlockCell.push({
+                x: width - 3,
+                y: height - 1
+            })
+        } else if (startCell.x === width - 1 && startCell.y === height - 3) {
+            needToBlockCell.push({
+                x: width - 1,
+                y: height - 4
+            })
+            needToBlockCell.push({
+                x: width - 1,
+                y: height - 2
+            })
+            needToBlockCell.push({
+                x: width - 3,
+                y: height - 1
+            })
+            needToBlockCell.push({
+                x: width - 2,
+                y: height - 1
+            })
+        } else if (startCell.x === 0) {
+            needToBlockCell.push({
+                x: 0,
+                y: startCell.y - 1
+            })
+            needToBlockCell.push({
+                x: 0,
+                y: startCell.y + 1
+            })
+        } else if (startCell.x === width - 1) {
+            needToBlockCell.push({
+                x: width - 1,
+                y: startCell.y - 1
+            })
+            needToBlockCell.push({
+                x: width - 1,
+                y: startCell.y + 1
+            })
+        } else if (startCell.y === 0) {
+            needToBlockCell.push({
+                x: startCell.x + 1,
+                y: 0
+            })
+            needToBlockCell.push({
+                x: startCell.x - 1,
+                y: 0
+            })
+        } else if (startCell.y === height - 1) {
+            needToBlockCell.push({
+                x: startCell.x + 1,
+                y: height - 1
+            })
+            needToBlockCell.push({
+                x: startCell.x - 1,
+                y: height - 1
+            })
+        }
+       
+       
         walls.forEach((wall, index) => {
-            if (((index + 1 < walls.length - 1) && walls[index + 1].classList.contains("start-cell")) || ((index + 1 < walls.length - 1) && walls[index + 1].dataset.border === 'true' && (index + 2 < walls.length - 1) && walls[index + 2].classList.contains("start-cell")) || wall.classList.contains("start-cell") || wall.dataset.border === 'true')
-            // ((index - 1 > 0)  && walls[index - 1].dataset.border === 'true' && (index - 2 > 0) && walls[index - 2].classList.contains("start-cell")) ||
-            // ((index - 1 > 0 ) && walls[index - 1].classList.contains("start-cell")) || 
-
+            const banned = needToBlockCell.find(cell => {
+                return cell.x === parseInt(wall.dataset.x) && cell.y === parseInt(wall.dataset.y);
+            });
+            if (wall.classList.contains("start-cell") || banned || wall.dataset.border === 'true')
                 return;
 
             wall.classList.add("flashing-finish");
@@ -161,8 +460,16 @@ export const AdminPage = () => {
             wall.removeEventListener('mouseover', addPotentialFinish);
             wall.removeEventListener('mouseout', removePotentialFinish);
             wall.removeEventListener('click', clickPotentialFinish);
-            handleCloseNoty();
         });
+        handleCloseNoty();
+
+        const adminSettings = document.getElementById("admin_settings");
+        const bg = document.getElementById('admin_bg');
+
+        adminSettings.style.opacity = 1;
+        adminSettings.style.pointerEvents = 'all';
+        if (bg.classList.contains("bg_blur"))
+            bg.classList.remove("bg_blur");
     }
 
     const handleChangeMethodCreate = (e) => {
