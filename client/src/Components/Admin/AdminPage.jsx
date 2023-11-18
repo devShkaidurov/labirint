@@ -1,5 +1,6 @@
 import './adminPage.css';
 import { Show }  from '../Noty/Noty';
+import { handleCloseNoty }  from '../Noty/Noty';
 import { useState } from 'react';
 
 export const AdminPage = () => {
@@ -54,13 +55,54 @@ export const AdminPage = () => {
         
         if (value === "handle") {
             handleSetStart();
-            handleSetFinish();
         }
 
         setEntryType(value);
-
-
     }
+
+    const addPotentialStart = (event) => {
+        const wall = event.target;
+        console.dir(wall);
+        wall.classList.add("potetial-start");
+    }
+
+    const removePotentialStart = (event) => {
+        const wall = event.target;
+        if (wall.classList.contains("potetial-start")) {
+            wall.classList.remove("potetial-start");
+        }
+    }
+
+    const clickPotentialStart = (event) => {
+        const wall = event.target;
+        if (wall.classList.contains("potetial-start")) {
+            wall.classList.remove("potential-start");
+            wall.classList.add("start-cell");
+        }
+        handleSetFinish();
+    }
+
+    const addPotentialFinish = (event) => {
+        const wall = event.target;
+        wall.classList.add("potetial-finish");
+    }
+
+    const removePotentialFinish = (event) => {
+        const wall = event.target;
+        if (wall.classList.contains("potetial-finish")) {
+            wall.classList.remove("potetial-finish");
+        }
+    }
+
+    const clickPotentialFinish = (event) => {
+        const wall = event.target;
+        if (wall.classList.contains("potetial-finish")) {
+            wall.classList.remove("potential-finish");
+            wall.classList.add("finish-cell");
+        }
+        handleCleanFinishWall();
+    }
+
 
     const handleSetStart = () => {
         const adminSettings = document.getElementById("admin_settings");
@@ -70,11 +112,57 @@ export const AdminPage = () => {
         adminSettings.style.pointerEvents = 'none';
         bg.className = 'bg_blur';
 
-        Show("Выберите клетку для входа в лабиринт!", 'alert')
+        Show("Выберите клетку для входа в лабиринт!", 'alert', 100000, false);
+        const walls = Array.from(document.getElementsByClassName("wall"));
+        walls.forEach((wall) => {
+            if (wall.dataset.border === 'true') 
+                return;
+
+            wall.classList.add("flashing-start");
+            wall.addEventListener('mouseover', addPotentialStart);
+            wall.addEventListener('mouseout', removePotentialStart);
+            wall.addEventListener('click', clickPotentialStart)
+        })
     }
 
     const handleSetFinish = () => {
+        // clean previous states
+        handleCloseNoty();
+        Show("Теперь выберите клетку для выхода из лабиринта!", 'alert', 100000, false);
+        const walls = Array.from(document.getElementsByClassName("wall"));
+        walls.forEach(wall => {
+            wall.classList.remove("flashing-start");
+            wall.removeEventListener('mouseover', addPotentialStart);
+            wall.removeEventListener('mouseout', removePotentialStart);
+            wall.removeEventListener('click', clickPotentialStart)
+        })
 
+        // set a new states
+        walls.forEach((wall, index) => {
+            if (((index + 1 < walls.length - 1) && walls[index + 1].classList.contains("start-cell")) || ((index + 1 < walls.length - 1) && walls[index + 1].dataset.border === 'true' && (index + 2 < walls.length - 1) && walls[index + 2].classList.contains("start-cell")) || wall.classList.contains("start-cell") || wall.dataset.border === 'true')
+            // ((index - 1 > 0)  && walls[index - 1].dataset.border === 'true' && (index - 2 > 0) && walls[index - 2].classList.contains("start-cell")) ||
+            // ((index - 1 > 0 ) && walls[index - 1].classList.contains("start-cell")) || 
+
+                return;
+
+            wall.classList.add("flashing-finish");
+            wall.addEventListener('mouseover', addPotentialFinish);
+            wall.addEventListener('mouseout', removePotentialFinish);
+            wall.addEventListener('click', clickPotentialFinish)
+        })
+    }
+
+    const handleCleanFinishWall = () => {
+        const walls = Array.from(document.getElementsByClassName("wall"));
+        walls.forEach(wall => {
+            if (wall.classList.contains("flashing-finish")) {
+                wall.classList.remove("flashing-finish");
+            }
+            wall.removeEventListener('mouseover', addPotentialFinish);
+            wall.removeEventListener('mouseout', removePotentialFinish);
+            wall.removeEventListener('click', clickPotentialFinish);
+            handleCloseNoty();
+        });
     }
 
     const handleChangeMethodCreate = (e) => {
@@ -197,7 +285,7 @@ export const AdminPage = () => {
                             let row = array.map((item, index) => {
                                 if (item.isWall) 
                                     return (
-                                        <td style={{height: heightRow, width: widthRow, backgroundColor: "black", border: 'solid 2px white'}} key={index} className="wall" ></td>
+                                        <td style={{height: heightRow, width: widthRow, backgroundColor: "black", border: 'solid 2px white'}} key={index} className="wall" data-x={index} data-y={indexOuter} data-border={((index === 0 && indexOuter === (height - 1)) || (index === 0 && indexOuter === 0) || (index === (width - 1) && indexOuter === 0) || (index === (width - 1) && indexOuter === (height - 1))) ? true : false}></td>
                                     )
                                 else 
                                     return (

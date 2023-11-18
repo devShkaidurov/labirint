@@ -27,7 +27,7 @@
     height: 80%;    
     width: 40%;
     left: 30%;
-    top: 3%;
+    top: 12%;
     background-color: azure;
 }
 
@@ -135,4 +135,61 @@ table {
     max-height: 600px;
     max-width: 600px;
     background-color: #156bc1;
+}
+
+
+.flashing-start {
+    animation: flashing-start 1.5s ease infinite;
+}
+
+@keyframes flashing-start {
+    0% {
+        box-shadow: 0px 0px red;
+    }
+
+    50% {
+        box-shadow: 0px 0px 15px red;
+        border: solid 1px red;
+    }
+
+    100% {
+        box-shadow: 0px 0px red;
+    }
+}
+
+.potetial-start {
+    background-color: #b41919 !important;
+}
+
+.start-cell {
+    background-color: #b41919 !important;
+}
+
+
+
+.flashing-finish {
+    animation: flashing-finish 1.5s ease infinite;
+}
+
+@keyframes flashing-finish {
+    0% {
+        box-shadow: 0px 0px green;
+    }
+
+    50% {
+        box-shadow: 0px 0px 15px green;
+        border: solid 1px green;
+    }
+
+    100% {
+        box-shadow: 0px 0px green;
+    }
+}
+
+.potetial-finish {
+    background-color: green !important;
+}
+
+.finish-cell {
+    background-color: green !important;
 }
