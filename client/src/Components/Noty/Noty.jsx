@@ -28,8 +28,8 @@ export function Show (text, type) {
     divWrapper.appendChild(divEl);
     
     document.getElementsByTagName("body")[0].appendChild(divWrapper);
-    setTimeout(() => {
-        if (Array.from(document.getElementsByTagName("body")[0].childNodes).includes(divWrapper))
-            document.getElementsByTagName("body")[0].removeChild(divWrapper);
-    }, 4000);
+    // setTimeout(() => {
+    //     if (Array.from(document.getElementsByTagName("body")[0].childNodes).includes(divWrapper))
+    //         document.getElementsByTagName("body")[0].removeChild(divWrapper);
+    // }, 4000);
 }

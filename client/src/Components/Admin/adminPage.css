@@ -4,7 +4,11 @@
     top: 0;
     height: 100%;
     width: 100%;
-    background-color:antiquewhite ;
+    background-color:rgb(250, 235, 215);
+}
+
+.bg_blur {
+    background-color:rgba(250, 235, 215, 0.4) !important;
 }
 
 #admin_settings {
@@ -20,10 +24,10 @@
 
 #admin_maze {
     position: absolute;
-    height: 80%;
+    height: 80%;    
     width: 40%;
     left: 30%;
-    top: 10%;
+    top: 3%;
     background-color: azure;
 }
 

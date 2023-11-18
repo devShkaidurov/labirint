@@ -3,15 +3,16 @@ import { Show }  from '../Noty/Noty';
 import { useState } from 'react';
 
 export const AdminPage = () => {
-    const [width, setWidth] = useState(9);
-    const [height, setHeight] = useState(9);
+    const MAXVALUE = 19;
+    const MINVALUE = 9;
+    const [width, setWidth] = useState(MINVALUE);
+    const [height, setHeight] = useState(MINVALUE);
     const [blurAction, setBlurAction] = useState(true);
     const [entryType, setEntryType] = useState();
     const [methodCreate, setMethodCreate] = useState();
     const [alg, setAlg] = useState();
     const [map, setMap] = useState();
 
-    Show("test test test", 'warning');
     const handleSetHeight = (e) => {
         const value = e.target.value;
         setHeight(value);
@@ -24,27 +25,56 @@ export const AdminPage = () => {
 
     const handleBlurWidth = (e) => {
         const value = e.target.value;
-        if (value < 9) {
-            setWidth(9);
-        } else if (value > 51) {
-            setWidth(51);
+        if (value < MINVALUE) {
+            setWidth(MINVALUE);
+            Show(`Ширина не может быть меньше ${MINVALUE}!`, 'error');
+        } else if (value > MAXVALUE) {
+            setWidth(MAXVALUE);
+            Show(`Ширина не может быть больше ${MAXVALUE}!`, 'error');
+
         }
         createTester();
     }
 
     const handleBlurHeight = (e) => {
         const value = e.target.value;
-        if (value < 9) {
-            setHeight(9);
-        } else if (value > 51) {
-            setHeight(51);
+        if (value < MINVALUE) {
+            setHeight(MINVALUE);
+            Show(`Высота не может быть меньше ${MINVALUE}!`, 'error');
+        } else if (value > MAXVALUE) {
+            setHeight(MAXVALUE);
+            Show(`Высота не может быть больше ${MAXVALUE}!`, 'error');
+        
         }
         createTester();
     }
 
     const handleChangeEntry = (e) => {
         const value = e.target.value;
+        
+        if (value === "handle") {
+            handleSetStart();
+            handleSetFinish();
+        }
+
         setEntryType(value);
+
+
+    }
+
+    const handleSetStart = () => {
+        const adminSettings = document.getElementById("admin_settings");
+        const bg = document.getElementById('admin_bg');
+
+        adminSettings.style.opacity = 0.4;
+        adminSettings.style.pointerEvents = 'none';
+        bg.className = 'bg_blur';
+
+        Show("Выберите клетку для входа в лабиринт!", 'alert')
+    }
+
+    const handleSetFinish = () => {
+
     }
 
     const handleChangeMethodCreate = (e) => {
@@ -93,11 +123,11 @@ export const AdminPage = () => {
                     <div className="admin_option_body">
                         <div id="admin_width">
                             <span>Ширина</span>
-                            <input type="number" step="2" min="9" max="51" value={width} onChange={handleSetWidth} onBlur={handleBlurWidth}></input>
+                            <input type="number" step="2" min={MINVALUE} max={MAXVALUE} value={width} onChange={handleSetWidth} onBlur={handleBlurWidth}></input>
                         </div>
                         <div id="admin_height">
                             <span>Высота</span>
-                            <input type="number" step="2" min="9" max="51" value={height} onChange={handleSetHeight} onBlur={handleBlurHeight}></input>
+                            <input type="number" step="2" min={MINVALUE} max={MAXVALUE} value={height} onChange={handleSetHeight} onBlur={handleBlurHeight}></input>
                         </div>
                     </div>
                 </div>
@@ -162,15 +192,16 @@ export const AdminPage = () => {
                     <tbody>
                     {
                         map?.map((array, indexOuter) => {
-                            const size = `${600 / map.length}px`;
+                            const heightRow = `${document.getElementById("admin_maze")?.clientHeight / height}px`;
+                            const widthRow  = `${document.getElementById("admin_maze")?.clientWidth / width}px`;
                             let row = array.map((item, index) => {
                                 if (item.isWall) 
                                     return (
-                                        <td style={{height: size, width: size, backgroundColor: "black", border: 'solid 2px white'}} key={index} className="wall" ></td>
+                                        <td style={{height: heightRow, width: widthRow, backgroundColor: "black", border: 'solid 2px white'}} key={index} className="wall" ></td>
                                     )
                                 else 
                                     return (
-                                        <td style={{height: size, width: size, backgroundColor: "green", border: 'solid 2px white'}} key={index}></td>
+                                        <td style={{height: heightRow, width: widthRow, backgroundColor: "green", border: 'solid 2px white'}} key={index}></td>
                                     )
                             })
 
