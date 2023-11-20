@@ -1,8 +1,11 @@
 import './adminPage.css';
 import { Show }  from '../Noty/Noty';
 import { handleCloseNoty }  from '../Noty/Noty';
-import { isValidElement, useState } from 'react';
+import { useState } from 'react';
+import { ConfirmForm } from './ConfirmForm/ConfirmForm';
 
+// x = j
+// y = i
 export const AdminPage = () => {
     const MAXVALUE = 19;
     const MINVALUE = 9;
@@ -13,6 +16,7 @@ export const AdminPage = () => {
     const [methodCreate, setMethodCreate] = useState();
     const [alg, setAlg] = useState();
     const [map, setMap] = useState();
+    const [openConfirmForm, setOpenConfirmForm] = useState(false);
 
     const handleSetHeight = (e) => {
         const value = e.target.value;
@@ -53,10 +57,6 @@ export const AdminPage = () => {
     const handleChangeEntry = (e) => {
         const startCell = Array.from(document.getElementsByClassName("start-cell"));
         const finishCell = Array.from(document.getElementsByClassName("finish-cell"));
-
-        console.dir(startCell);
-        console.dir(finishCell);
-
         if (startCell.length > 0) {
             startCell[0].classList.remove('start-cell');
         }
@@ -76,7 +76,6 @@ export const AdminPage = () => {
 
     const addPotentialStart = (event) => {
         const wall = event.target;
-        console.dir(wall);
         wall.classList.add("potetial-start");
     }
 
@@ -87,7 +86,7 @@ export const AdminPage = () => {
         }
     }
 
-    let startCell = {};
+    const startCell = {};
     const clickPotentialStart = (event) => {
         const wall = event.target;
         if (wall.classList.contains("potetial-start")) {
@@ -111,11 +110,14 @@ export const AdminPage = () => {
         }
     }
 
+    const finishCell = {};
     const clickPotentialFinish = (event) => {
         const wall = event.target;
         if (wall.classList.contains("potetial-finish")) {
             wall.classList.remove("potetial-finish");
             wall.classList.add("finish-cell");
+            finishCell.x = parseInt(wall.dataset.x);
+            finishCell.y = parseInt(wall.dataset.y);
         }
         handleCleanFinishWall();
     }
@@ -452,6 +454,26 @@ export const AdminPage = () => {
     }
 
     const handleCleanFinishWall = () => {
+        const arrayMap = new Array(height);
+        for (let i = 0; i < height; i++) {
+            arrayMap[i] = new Array(width);
+            for (let j = 0; j < width; j++) {
+                arrayMap[i][j] = {};
+                if (i == 0 || i == height - 1 || j == 0 || j == width - 1)
+                    arrayMap[i][j].isWall = true;
+                else 
+                    arrayMap[i][j].isWall = false; 
+
+                if (finishCell.x === j && finishCell.y === i) {
+                    arrayMap[i][j].isFinish = true;
+                }
+                
+                if (startCell.x === j && startCell.y === i)
+                    arrayMap[i][j].isStart = true;
+            }
+        }
+        setMap(arrayMap);
+
         const walls = Array.from(document.getElementsByClassName("wall"));
         walls.forEach(wall => {
             if (wall.classList.contains("flashing-finish")) {
@@ -503,6 +525,109 @@ export const AdminPage = () => {
             }
         }
         setMap(arrayMap);
+    }
+
+    const manageCreateMaze = () => {
+        if (methodCreate === "handle") 
+            handleCreateMaze();
+        // else if (methodCreate === "alg") 
+        //     algCreateMaze();
+    }
+
+    const handleBuildWall = (e) => {
+        const cell = e.target;
+        if (!cell.classList.contains("wall-handle")) {
+            cell.classList.add("wall-handle");
+            cell.classList.add("wall");
+        } else {
+            cell.classList.remove("wall-handle");
+            cell.classList.remove("wall");
+        }
+
+    }
+
+    const handleCreateMaze = () => {
+        const adminSettings = document.getElementById("admin_settings");
+        const bg = document.getElementById('admin_bg');
+        adminSettings.style.opacity = 0.4;
+        adminSettings.style.pointerEvents = 'none';
+        bg.className = 'bg_blur';
+        Show("Творите!", 'alert', 99999999, false);
+
+        const startCell = {};
+        const finishCell = {};
+        map.find((row, indexOuter) => {
+            row.find((cell, index) => {
+                if (cell.isFinish) {
+                    finishCell.x = index;
+                    finishCell.y = indexOuter;
+                }
+
+                if (cell.isStart) {
+                    startCell.x = index;
+                    startCell.y = indexOuter;
+                }
+            })
+        })
+
+        const bannedStart = {};
+        const bannedFinish = {};
+        if (startCell.x === 0) {
+            bannedStart.x = 1;
+            bannedStart.y = startCell.y;
+        } else if (startCell.x === width - 1) {
+            bannedStart.x = width - 2;
+            bannedStart.y = startCell.y;
+        } else if (startCell.y === 0) {
+            bannedStart.x = startCell.x;
+            bannedStart.y = 1;
+        } else if (startCell.y === height - 1) {
+            bannedStart.x = startCell.x;
+            bannedStart.y =  height - 2;
+        }
+
+        if (finishCell.x === 0) {
+            bannedFinish.x = 1;
+            bannedFinish.y = finishCell.y;
+        } else if (finishCell.x === width - 1) {
+            bannedFinish.x = width - 2;
+            bannedFinish.y = finishCell.y;
+        } else if (finishCell.y === 0) {
+            bannedFinish.x = finishCell.x;
+            bannedFinish.y = 1;
+        } else if (finishCell.y === height - 1) {
+            bannedFinish.x = finishCell.x;
+            bannedFinish.y =  height - 2;
+        }
+
+        const bannedCells = [];
+        const tds = Array.from(document.getElementsByTagName("td"));
+        const avaliableCell = tds.filter(cell => {
+            if (bannedStart.x === parseInt(cell.dataset.x) && bannedStart.y === parseInt(cell.dataset.y)) {
+                bannedCells.push(cell);
+                cell.classList.add("disableCell");
+            }
+
+            if (bannedFinish.x === parseInt(cell.dataset.x) && bannedFinish.y === parseInt(cell.dataset.y)) {
+                bannedCells.push(cell);
+                cell.classList.add("disableCell");
+            }
+            return !cell.classList.contains("wall") && !(bannedStart.x === parseInt(cell.dataset.x) && bannedStart.y === parseInt(cell.dataset.y) || (bannedFinish.x === parseInt(cell.dataset.x) && bannedFinish.y === parseInt(cell.dataset.y)))
+        });
+        avaliableCell.forEach(cell => {
+            cell.classList.add("avaliable");
+            cell.addEventListener('click', handleBuildWall)
+        })
+
+        setOpenConfirmForm(true);
+    }
+
+    const handleReadyCF = () => {
+
+    }
+
+    const handleRejectCF = () => {
+        setOpenConfirmForm(false);
     }
 
     return (
@@ -576,7 +701,7 @@ export const AdminPage = () => {
                 </div>
 
                 <div id="admin_settings_action" className={blurAction ? "blurArea" : null}>
-                    <button>Создать</button>
+                    <button onClick={manageCreateMaze}>Создать</button>
                 </div>
             </div>
 
@@ -596,7 +721,7 @@ export const AdminPage = () => {
                                     )
                                 else 
                                     return (
-                                        <td style={{height: heightRow, width: widthRow, backgroundColor: "green", border: 'solid 2px white'}} key={index}></td>
+                                        <td style={{height: heightRow, width: widthRow, backgroundColor: "#007080", border: 'solid 2px white'}} key={index} data-x={index} data-y={indexOuter}></td>
                                     )
                             })
 
@@ -610,6 +735,11 @@ export const AdminPage = () => {
                     </tbody>
                 </table>
             </div>
+
+            {openConfirmForm ? 
+                <ConfirmForm handleReady={handleReadyCF} handleReject={handleRejectCF}/>
+                :
+                null}
         </div>
     )
 }

@@ -1,0 +1,31 @@
+#confirm-container {
+    position: absolute;
+    bottom: 1%;
+    right: 1%;
+    width: 200px;
+    height: 75px;
+    background-color: #007080;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 5px;
+}
+
+#confirm-container button {
+    font-family: cursive;
+    font-size: 12pt;
+    border: none;
+    background: #1DF0C6;
+    padding: 2px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+#confirm-container button:hover {
+    box-shadow: 0px 0px 5px black;
+}
+
+#confirm-container button:active {
+    background-color: rgb(1, 77, 88);
+    color: #02899d;
+}
