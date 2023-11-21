@@ -43,6 +43,19 @@ app.post('/auth', (req, response) => {
   });
 });
 
+app.post('/validateMaze', (req, response) => {
+  let data = "";
+  req.on("data", chunk => {
+      data += chunk;
+  });
+  req.on("end", async () => {
+      const payload = JSON.parse(data);
+      response.setHeader("Content-Type", "application/json");
+      const isValid = true;
+      response.end(JSON.stringify(isValid));
+  });
+})
+
 app.listen(port, () => {
   // init().then(() => {
   //   console.log("Server has connected to database.")

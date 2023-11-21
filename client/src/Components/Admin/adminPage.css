@@ -192,9 +192,7 @@ table {
     background-color: green !important;
 }
 
-.finish-cell {
-    background-color: green !important;
-}
+
 
 .avaliable {
     cursor: pointer;
@@ -223,4 +221,52 @@ table {
 .wall-handle {
     background-color: black !important; 
     border: solid 2px white !important;
+}
+
+
+
+
+#admin-floppy-disk {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    pointer-events: none;
+    opacity: 0;
+    transition: 0.25s;
+    z-index: 55;
+}
+
+#admin-floppy-disk button {
+    border: none;
+    background: none;
+    transition: 0.25s;
+    cursor: pointer;
+}
+
+#admin-floppy-disk button:hover {
+    scale: 1.1;
+    transition: 0.25s;
+}
+
+#admin-floppy-disk button img {
+    height: 50px;
+    width: 50px;
+}
+
+.finish-cell {
+    background-color: green !important;
+}
+
+/* .wall {
+    background-color: black !important;
+} */
+
+.start {
+    background-color: #b41919 !important;
+    border: 2px solid white;
+}
+
+.finish {
+    background-color: green !important;
+    border: 2px solid white;
 }

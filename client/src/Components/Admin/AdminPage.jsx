@@ -3,6 +3,8 @@ import { Show }  from '../Noty/Noty';
 import { handleCloseNoty }  from '../Noty/Noty';
 import { useState } from 'react';
 import { ConfirmForm } from './ConfirmForm/ConfirmForm';
+import { serverConnector } from '../../serverConnector';
+import floppyDisk from '../../images/save.svg';
 
 // x = j
 // y = i
@@ -17,6 +19,7 @@ export const AdminPage = () => {
     const [alg, setAlg] = useState();
     const [map, setMap] = useState();
     const [openConfirmForm, setOpenConfirmForm] = useState(false);
+    const connector = serverConnector();
 
     const handleSetHeight = (e) => {
         const value = e.target.value;
@@ -535,16 +538,22 @@ export const AdminPage = () => {
     }
 
     const handleBuildWall = (e) => {
+        const arrayMap = [].concat(map);
         const cell = e.target;
-        if (!cell.classList.contains("wall-handle")) {
-            cell.classList.add("wall-handle");
-            cell.classList.add("wall");
+        if (!cell.classList.contains("wall")) {
+            // cell.classList.add("wall");
+            cell.classList.remove("avaliable");
+            arrayMap[cell.dataset.y][cell.dataset.x].isWall = true;
         } else {
-            cell.classList.remove("wall-handle");
-            cell.classList.remove("wall");
+            // cell.classList.remove("wall");
+            cell.classList.add("avaliable")
+            arrayMap[cell.dataset.y][cell.dataset.x].isWall = false;
         }
 
+        console.dir(arrayMap);
+        setMap(arrayMap);
     }
+ 
 
     const handleCreateMaze = () => {
         const adminSettings = document.getElementById("admin_settings");
@@ -554,66 +563,11 @@ export const AdminPage = () => {
         bg.className = 'bg_blur';
         Show("Творите!", 'alert', 99999999, false);
 
-        const startCell = {};
-        const finishCell = {};
-        map.find((row, indexOuter) => {
-            row.find((cell, index) => {
-                if (cell.isFinish) {
-                    finishCell.x = index;
-                    finishCell.y = indexOuter;
-                }
-
-                if (cell.isStart) {
-                    startCell.x = index;
-                    startCell.y = indexOuter;
-                }
-            })
-        })
-
-        const bannedStart = {};
-        const bannedFinish = {};
-        if (startCell.x === 0) {
-            bannedStart.x = 1;
-            bannedStart.y = startCell.y;
-        } else if (startCell.x === width - 1) {
-            bannedStart.x = width - 2;
-            bannedStart.y = startCell.y;
-        } else if (startCell.y === 0) {
-            bannedStart.x = startCell.x;
-            bannedStart.y = 1;
-        } else if (startCell.y === height - 1) {
-            bannedStart.x = startCell.x;
-            bannedStart.y =  height - 2;
-        }
-
-        if (finishCell.x === 0) {
-            bannedFinish.x = 1;
-            bannedFinish.y = finishCell.y;
-        } else if (finishCell.x === width - 1) {
-            bannedFinish.x = width - 2;
-            bannedFinish.y = finishCell.y;
-        } else if (finishCell.y === 0) {
-            bannedFinish.x = finishCell.x;
-            bannedFinish.y = 1;
-        } else if (finishCell.y === height - 1) {
-            bannedFinish.x = finishCell.x;
-            bannedFinish.y =  height - 2;
-        }
-
-        const bannedCells = [];
         const tds = Array.from(document.getElementsByTagName("td"));
         const avaliableCell = tds.filter(cell => {
-            if (bannedStart.x === parseInt(cell.dataset.x) && bannedStart.y === parseInt(cell.dataset.y)) {
-                bannedCells.push(cell);
-                cell.classList.add("disableCell");
-            }
-
-            if (bannedFinish.x === parseInt(cell.dataset.x) && bannedFinish.y === parseInt(cell.dataset.y)) {
-                bannedCells.push(cell);
-                cell.classList.add("disableCell");
-            }
-            return !cell.classList.contains("wall") && !(bannedStart.x === parseInt(cell.dataset.x) && bannedStart.y === parseInt(cell.dataset.y) || (bannedFinish.x === parseInt(cell.dataset.x) && bannedFinish.y === parseInt(cell.dataset.y)))
+            return !cell.classList.contains("wall")
         });
+
         avaliableCell.forEach(cell => {
             cell.classList.add("avaliable");
             cell.addEventListener('click', handleBuildWall)
@@ -623,11 +577,59 @@ export const AdminPage = () => {
     }
 
     const handleReadyCF = () => {
-
+        connector.validateMaze(map).then(async (result) => {
+            // const isValid = await result.json();
+            const isValid = true;
+            const saveBtn = document.getElementById("admin-floppy-disk");
+            if (isValid) {
+                saveBtn.style.pointerEvents = 'all';
+                saveBtn.style.opacity = 1;
+                const tds = Array.from(document.getElementsByTagName("td"));
+                tds.forEach(td => {
+                    if (td.classList.contains("avaliable")) 
+                        td.classList.remove("avaliable");
+                    td.replaceWith(td.cloneNode());
+                })
+                setOpenConfirmForm(false);
+            } else {
+                saveBtn.style.pointerEvents = 'none';
+                saveBtn.style.opacity = 0;
+            }
+        }, rej => {
+            console.error(rej);
+        }).catch(e => {
+            console.error(e);
+        })
     }
 
-    const handleRejectCF = () => {
+
+    const handleRejectCF = () => {  
+        const arrayMap = [].concat(map);
+        arrayMap.forEach((row, y) => {
+            row.forEach((cell, x) => {
+                if (!(x === 0 || y === 0 || x === width - 1 || y === height - 1))
+                    cell.isWall = false;
+            })
+        })
+        setMap(arrayMap);
+        setTimeout(() => {
+            const tds = Array.from(document.getElementsByTagName("td"));
+            tds.forEach(td => {
+                if (td.classList.contains("avaliable")) {
+                    td.classList.remove("avaliable");
+                }
+                td.replaceWith(td.cloneNode());
+            })
+        }, 100)
         setOpenConfirmForm(false);
+
+        const adminSettings = document.getElementById("admin_settings");
+        const bg = document.getElementById('admin_bg');
+        adminSettings.style.opacity = 1;
+        adminSettings.style.pointerEvents = 'all';
+        bg.className = '';
+        setMethodCreate(undefined)
+        handleCloseNoty();
     }
 
     return (
@@ -712,16 +714,30 @@ export const AdminPage = () => {
                     <tbody>
                     {
                         map?.map((array, indexOuter) => {
+                            console.dir(map);
                             const heightRow = `${document.getElementById("admin_maze")?.clientHeight / height}px`;
                             const widthRow  = `${document.getElementById("admin_maze")?.clientWidth / width}px`;
                             let row = array.map((item, index) => {
-                                if (item.isWall) 
+                                if (item.isStart) {
                                     return (
-                                        <td style={{height: heightRow, width: widthRow, backgroundColor: "black", border: 'solid 2px white'}} key={index} className="wall" data-x={index} data-y={indexOuter} data-border={((index === 0 && indexOuter === (height - 1)) || (index === 0 && indexOuter === 0) || (index === (width - 1) && indexOuter === 0) || (index === (width - 1) && indexOuter === (height - 1))) ? true : false}></td>
+                                        <td style={{height: heightRow, width: widthRow}} key={index + "|" + indexOuter} className="wall start" data-x={index} data-y={indexOuter} data-border={((index === 0 && indexOuter === (height - 1)) || (index === 0 && indexOuter === 0) || (index === (width - 1) && indexOuter === 0) || (index === (width - 1) && indexOuter === (height - 1))) ? true : false}></td>
                                     )
-                                else 
+                                }
+
+                                if (item.isFinish) {
                                     return (
-                                        <td style={{height: heightRow, width: widthRow, backgroundColor: "#007080", border: 'solid 2px white'}} key={index} data-x={index} data-y={indexOuter}></td>
+                                        <td style={{height: heightRow, width: widthRow}} key={index + "|" + indexOuter} className="wall finish" data-x={index} data-y={indexOuter} data-border={((index === 0 && indexOuter === (height - 1)) || (index === 0 && indexOuter === 0) || (index === (width - 1) && indexOuter === 0) || (index === (width - 1) && indexOuter === (height - 1))) ? true : false}></td>
+                                    )
+                                }
+
+                                if (item.isWall) {
+                                    console.dir("x: " + index + " | y: " + indexOuter);
+                                    return (
+                                        <td style={{height: heightRow, width: widthRow, backgroundColor: "black", border: 'solid 2px white'}} key={index + "|" + indexOuter} className="wall" data-x={index} data-y={indexOuter} data-border={((index === 0 && indexOuter === (height - 1)) || (index === 0 && indexOuter === 0) || (index === (width - 1) && indexOuter === 0) || (index === (width - 1) && indexOuter === (height - 1))) ? true : false}></td>
+                                    )
+                                } else 
+                                    return (
+                                        <td style={{height: heightRow, width: widthRow, backgroundColor: "#007080", border: 'solid 2px white'}} key={index + "|" + indexOuter} data-x={index} data-y={indexOuter}></td>
                                     )
                             })
 
@@ -740,6 +756,12 @@ export const AdminPage = () => {
                 <ConfirmForm handleReady={handleReadyCF} handleReject={handleRejectCF}/>
                 :
                 null}
+
+            <div id='admin-floppy-disk'>
+                <button title='Сохранить лабиринт'>
+                    <img src={floppyDisk}></img>
+                </button>
+            </div>
         </div>
     )
 }
