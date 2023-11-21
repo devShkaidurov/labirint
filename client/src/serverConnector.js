@@ -68,11 +68,29 @@ export const serverConnector = () => {
             })
         })
     }
+    
+    function saveMaze (data) {
+        return new Promise ((res, rej) => {
+            const url = 'http://127.0.0.1:7171/saveMaze';
+            fetch(url, {
+                method: "POST",
+                body: JSON.stringify(data)
+            }).then((ans) => {
+                res(ans);
+            }, reject => {
+                rej(reject);
+            })
+            .catch(e => {
+                rej(e);
+            })
+        })
+    }
 
     return {
         register,
         auth,
         validateMaze,
-        getEntries
+        getEntries,
+        saveMaze
     }
 }

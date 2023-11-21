@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { ConfirmForm } from './ConfirmForm/ConfirmForm';
 import { serverConnector } from '../../serverConnector';
 import floppyDisk from '../../images/save.svg';
+import { SaveFormModal, SaveFrom } from '../SaveForm/SaveForm';
 
 // x = j
 // y = i
@@ -19,6 +20,8 @@ export const AdminPage = () => {
     const [alg, setAlg] = useState();
     const [map, setMap] = useState();
     const connector = serverConnector();
+    const [activeSaveModal, setActiveSaveModal] = useState(false);
+    const [nameMaze, setNameMaze] = useState();
 
     const handleSetHeight = (e) => {
         const value = e.target.value;
@@ -690,6 +693,32 @@ export const AdminPage = () => {
         setOpenConfirmForm();
     }
 
+    const handleSaveMaze = () => {
+        setActiveSaveModal(true);
+    }
+
+    const handleFinallySaveMaze = () => {
+        setActiveSaveModal(false);
+        connector.saveMaze({
+            maze: map,
+            name: nameMaze
+        }).then(async (payload) => {
+            const ans = await payload.json();
+            Show('Лабиринт успешно сохранен в базу данных!', 'success', 3000);
+        }, rej => {
+            console.error(rej);
+            Show(rej, 'error', 3000);
+        })
+        .catch(e => {
+            console.error(e);
+            Show(e, 'error', 3000);
+        })
+    }
+
+    const handleChangeNameMaze = (e) => {
+        const value = e.target.value;
+        setNameMaze(value);
+    }
     return (
         <div id="admin_bg">
 
@@ -788,7 +817,6 @@ export const AdminPage = () => {
                                 }
 
                                 if (item.isWall) {
-                                    // console.dir("x: " + index + " | y: " + indexOuter);
                                     return (
                                         <td style={{height: heightRow, width: widthRow, backgroundColor: "black", border: 'solid 2px white'}} key={index + "|" + indexOuter} className="wall" data-x={index} data-y={indexOuter} data-border={((index === 0 && indexOuter === (height - 1)) || (index === 0 && indexOuter === 0) || (index === (width - 1) && indexOuter === 0) || (index === (width - 1) && indexOuter === (height - 1))) ? true : false}></td>
                                     )
@@ -813,10 +841,20 @@ export const AdminPage = () => {
            
 
             <div id='admin-floppy-disk'>
-                <button title='Сохранить лабиринт'>
+                <button title='Сохранить лабиринт' onClick={handleSaveMaze}>
                     <img src={floppyDisk}></img>
                 </button>
             </div>
+
+            <SaveFormModal active={activeSaveModal} setActive={setActiveSaveModal}>
+                <div id='save-form-header'>Сохранение лабиринта</div>
+                <div id='save-form-input-div'>
+                    <div>Введите название:</div>
+                    <input type='text' onChange={handleChangeNameMaze}></input>
+                </div>
+
+                <button onClick={handleFinallySaveMaze}>Сохранить</button>
+            </SaveFormModal>
         </div>
     )
 }

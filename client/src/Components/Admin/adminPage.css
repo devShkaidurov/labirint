@@ -281,3 +281,21 @@ table {
 .potential-wall {
     background-color: rgb(29, 29, 29) !important;
 }
+
+#save-form-input-div {
+    font-family: cursive;
+    font-size: 13pt;
+    padding: 10px;
+}
+
+#save-form-input-div input {
+    font-family: cursive;
+    font-size: 12pt;
+    color: #0e4d83;
+}
+
+#save-form-header {
+    font-family: cursive;
+    font-size: 18pt;
+    margin-bottom: 25px;
+}

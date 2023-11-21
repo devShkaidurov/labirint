@@ -213,8 +213,6 @@ class Maze {
         }
         const WIDTH = x; // Width of the maze (must be odd).
         const HEIGHT = y; // Height of the maze (must be odd).
-        console.assert(WIDTH % 2 == 1 && WIDTH >= 2);
-        console.assert(HEIGHT % 2 == 1 && HEIGHT >= 2);
         
         // Use these characters for displaying the maze:
         const EMPTY = " ";
