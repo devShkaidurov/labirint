@@ -18,7 +18,6 @@ export const AdminPage = () => {
     const [methodCreate, setMethodCreate] = useState();
     const [alg, setAlg] = useState();
     const [map, setMap] = useState();
-    const [openConfirmForm, setOpenConfirmForm] = useState(false);
     const connector = serverConnector();
 
     const handleSetHeight = (e) => {
@@ -456,6 +455,21 @@ export const AdminPage = () => {
         })
     }
 
+
+    const setOpenConfirmForm = () => {
+        const el = document.getElementById("confirm-container");
+        console.dir(el);
+        if (parseInt(el.style.opacity) === 1) {
+            console.dir("block");
+            el.style.opacity = 0;
+            el.style.pointerEvents = 'none'
+        } else {
+            console.dir("able");
+            el.style.opacity = 1;
+            el.style.pointerEvents = 'all';
+        }
+    }
+
     const handleCleanFinishWall = () => {
         const arrayMap = new Array(height);
         for (let i = 0; i < height; i++) {
@@ -538,22 +552,16 @@ export const AdminPage = () => {
     }
 
     const handleBuildWall = (e) => {
-        const arrayMap = [].concat(map);
-        const cell = e.target;
-        if (!cell.classList.contains("wall")) {
-            // cell.classList.add("wall");
-            cell.classList.remove("avaliable");
-            arrayMap[cell.dataset.y][cell.dataset.x].isWall = true;
+        const el = e.target;
+        console.dir(el);
+        if (el.classList.contains("avaliable")) {
+            el.classList.remove("avaliable");
+            el.classList.add("potential-wall");
         } else {
-            // cell.classList.remove("wall");
-            cell.classList.add("avaliable")
-            arrayMap[cell.dataset.y][cell.dataset.x].isWall = false;
+            el.classList.add("avaliable");
+            el.classList.remove("potential-wall");
         }
-
-        console.dir(arrayMap);
-        setMap(arrayMap);
-    }
- 
+    } 
 
     const handleCreateMaze = () => {
         const adminSettings = document.getElementById("admin_settings");
@@ -563,37 +571,44 @@ export const AdminPage = () => {
         bg.className = 'bg_blur';
         Show("Творите!", 'alert', 99999999, false);
 
+        setOpenConfirmForm();
         const tds = Array.from(document.getElementsByTagName("td"));
-        const avaliableCell = tds.filter(cell => {
-            return !cell.classList.contains("wall")
-        });
-
-        avaliableCell.forEach(cell => {
-            cell.classList.add("avaliable");
-            cell.addEventListener('click', handleBuildWall)
+        const avaliable = tds.filter(el => !el.classList.contains("wall"));
+        avaliable.forEach(el => {
+            el.classList.add("avaliable");
+            el.addEventListener('click', handleBuildWall);
         })
 
-        setOpenConfirmForm(true);
     }
 
     const handleReadyCF = () => {
-        connector.validateMaze(map).then(async (result) => {
+        handleCloseNoty();
+        const arrayMap = [].concat(map);
+        const potentialWall = Array.from(document.getElementsByClassName("potential-wall"));
+        potentialWall.forEach(el => {
+            arrayMap[el.dataset.y][el.dataset.x].isWall = true;
+        })
+        connector.validateMaze(arrayMap).then(async (result) => {
             // const isValid = await result.json();
             const isValid = true;
             const saveBtn = document.getElementById("admin-floppy-disk");
             if (isValid) {
                 saveBtn.style.pointerEvents = 'all';
                 saveBtn.style.opacity = 1;
-                const tds = Array.from(document.getElementsByTagName("td"));
-                tds.forEach(td => {
-                    if (td.classList.contains("avaliable")) 
-                        td.classList.remove("avaliable");
-                    td.replaceWith(td.cloneNode());
+
+                const avaliable = Array.from(document.getElementsByTagName("td")).filter(el => !el.classList.contains("wall"));
+                avaliable.forEach(el => {
+                    el.classList.remove("avaliable");
+                    el.removeEventListener('click', handleBuildWall);
                 })
-                setOpenConfirmForm(false);
+
+                setMap(arrayMap);
+                setOpenConfirmForm();
+                Show('Ваш лабиринт верен, можете его сохранить!', 'success', 9999999, true);
             } else {
                 saveBtn.style.pointerEvents = 'none';
                 saveBtn.style.opacity = 0;
+                Show('Ваш лабиринт неверен, исправьте стенки!', 'error', 3000, true);
             }
         }, rej => {
             console.error(rej);
@@ -604,24 +619,21 @@ export const AdminPage = () => {
 
 
     const handleRejectCF = () => {  
-        const arrayMap = [].concat(map);
-        arrayMap.forEach((row, y) => {
-            row.forEach((cell, x) => {
-                if (!(x === 0 || y === 0 || x === width - 1 || y === height - 1))
-                    cell.isWall = false;
-            })
+        const tds = Array.from(document.getElementsByTagName("td"));
+        tds.forEach(el => {
+            if (el.classList.contains("wall"))
+                return;
+            
+            el.removeEventListener('click', handleBuildWall);
+
+            if (el.classList.contains("potential-wall")) {
+                el.classList.remove("potential-wall");
+            }
+
+            if (el.classList.contains("avaliable")) {
+                el.classList.remove("avaliable");
+            }
         })
-        setMap(arrayMap);
-        setTimeout(() => {
-            const tds = Array.from(document.getElementsByTagName("td"));
-            tds.forEach(td => {
-                if (td.classList.contains("avaliable")) {
-                    td.classList.remove("avaliable");
-                }
-                td.replaceWith(td.cloneNode());
-            })
-        }, 100)
-        setOpenConfirmForm(false);
 
         const adminSettings = document.getElementById("admin_settings");
         const bg = document.getElementById('admin_bg');
@@ -630,6 +642,8 @@ export const AdminPage = () => {
         bg.className = '';
         setMethodCreate(undefined)
         handleCloseNoty();
+        setBlurAction(true);
+        setOpenConfirmForm();
     }
 
     return (
@@ -714,7 +728,6 @@ export const AdminPage = () => {
                     <tbody>
                     {
                         map?.map((array, indexOuter) => {
-                            console.dir(map);
                             const heightRow = `${document.getElementById("admin_maze")?.clientHeight / height}px`;
                             const widthRow  = `${document.getElementById("admin_maze")?.clientWidth / width}px`;
                             let row = array.map((item, index) => {
@@ -731,7 +744,7 @@ export const AdminPage = () => {
                                 }
 
                                 if (item.isWall) {
-                                    console.dir("x: " + index + " | y: " + indexOuter);
+                                    // console.dir("x: " + index + " | y: " + indexOuter);
                                     return (
                                         <td style={{height: heightRow, width: widthRow, backgroundColor: "black", border: 'solid 2px white'}} key={index + "|" + indexOuter} className="wall" data-x={index} data-y={indexOuter} data-border={((index === 0 && indexOuter === (height - 1)) || (index === 0 && indexOuter === 0) || (index === (width - 1) && indexOuter === 0) || (index === (width - 1) && indexOuter === (height - 1))) ? true : false}></td>
                                     )
@@ -752,10 +765,8 @@ export const AdminPage = () => {
                 </table>
             </div>
 
-            {openConfirmForm ? 
-                <ConfirmForm handleReady={handleReadyCF} handleReject={handleRejectCF}/>
-                :
-                null}
+            <ConfirmForm handleReady={handleReadyCF} handleReject={handleRejectCF}/>
+           
 
             <div id='admin-floppy-disk'>
                 <button title='Сохранить лабиринт'>

@@ -270,3 +270,7 @@ table {
     background-color: green !important;
     border: 2px solid white;
 }
+
+.potential-wall {
+    background-color: rgb(29, 29, 29) !important;
+}

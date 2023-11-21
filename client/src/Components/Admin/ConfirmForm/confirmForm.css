@@ -10,6 +10,9 @@
     align-items: center;
     border-radius: 5px;
     box-shadow: 0px 0px 5px black;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.25s;
 }
 
 #confirm-container button {

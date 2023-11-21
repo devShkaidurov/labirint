@@ -23,6 +23,7 @@ export function Show (text, type, _time, _closable) {
     divEl.className = type;
     spanEl.innerHTML = text;
 
+    divEl.appendChild(spanEl);
     if (closable) {
         const buttonEl = document.createElement("button");
         buttonEl.id = "noty_button_close";
@@ -31,7 +32,6 @@ export function Show (text, type, _time, _closable) {
         divEl.appendChild(buttonEl);
     }
 
-    divEl.appendChild(spanEl);
     divWrapper.appendChild(divEl);
     
     document.getElementById("admin_bg").appendChild(divWrapper);
