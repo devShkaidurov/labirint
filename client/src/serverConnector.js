@@ -52,9 +52,27 @@ export const serverConnector = () => {
         })
     }
 
+    function getEntries (maze) {
+        return new Promise ((res, rej) => {
+            const url = 'http://127.0.0.1:7171/getRandomEntry';
+            fetch(url, {
+                method: "POST",
+                body: JSON.stringify(maze)
+            }).then((ans) => {
+                res(ans);
+            }, reject => {
+                rej(reject);
+            })
+            .catch(e => {
+                rej(e);
+            })
+        })
+    }
+
     return {
         register,
         auth,
-        validateMaze
+        validateMaze,
+        getEntries
     }
 }

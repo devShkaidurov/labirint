@@ -57,24 +57,63 @@ export const AdminPage = () => {
     }
 
     const handleChangeEntry = (e) => {
-        const startCell = Array.from(document.getElementsByClassName("start-cell"));
-        const finishCell = Array.from(document.getElementsByClassName("finish-cell"));
+        const startCell = Array.from(document.getElementsByClassName("start"));
+        const finishCell = Array.from(document.getElementsByClassName("finish"));
         if (startCell.length > 0) {
-            startCell[0].classList.remove('start-cell');
+            startCell[0].classList.remove('start');
+            startCell[0].classList.add("wall");
         }
 
         if (finishCell.length > 0) {
-            finishCell[0].classList.remove('finish-cell');
+            finishCell[0].classList.remove('finish');
+            finishCell[0].classList.add("wall");
         }
 
         const value = e.target.value;
         
         if (value === "handle") {
             handleSetStart();
+        } else if (value === "random") {
+            randomSetEntry();
         }
 
         setEntryType(value);
     }
+
+    const handleGetRandomEntry = () => {
+        if (entryType === "random") {
+            randomSetEntry();
+        }
+    }
+
+    const randomSetEntry = () => {
+        connector.getEntries(map).then(async (payload) => {
+            const ans = await payload.json();
+            const start = ans.start;
+            const finish = ans.finish;
+            const arrayMap = [].concat(map);
+            arrayMap.forEach((row, y) => {
+                row.forEach((cell, x) => {
+                    if (cell.isFinish)
+                        cell.isFinish = false;
+                    if (cell.isStart)
+                        cell.isStart = false;
+                    if (start.x === x && start.y === y)
+                        cell.isStart = true;
+                    if (finish.x === x && finish.y === y)
+                        cell.isFinish = true;
+                })
+            })
+            setMap(arrayMap);
+        }, rej => {
+            console.error(rej);
+        })
+        .catch(e => {
+            console.error(e);
+        })
+    }
+
+
 
     const addPotentialStart = (event) => {
         const wall = event.target;
@@ -604,7 +643,12 @@ export const AdminPage = () => {
 
                 setMap(arrayMap);
                 setOpenConfirmForm();
-                Show('Ваш лабиринт верен, можете его сохранить!', 'success', 9999999, true);
+                Show('Ваш лабиринт верен, можете его сохранить!', 'success', 3000, true);
+                const adminSettings = document.getElementById("admin_settings");
+                const bg = document.getElementById('admin_bg');
+                adminSettings.style.opacity = 1;
+                adminSettings.style.pointerEvents = 'all';
+                bg.className = '';
             } else {
                 saveBtn.style.pointerEvents = 'none';
                 saveBtn.style.opacity = 0;
@@ -678,7 +722,7 @@ export const AdminPage = () => {
                             <label htmlFor="admin_entry_handle">Вручную</label>
                         </div>
                         <div>
-                            <input type="radio" name="entry" id="admin_entry_random" value="random" checked={entryType === "random"} onChange={handleChangeEntry}></input>
+                            <input type="radio" name="entry" id="admin_entry_random" value="random" checked={entryType === "random"} onChange={handleChangeEntry} onClick={handleGetRandomEntry}></input>
                             <label htmlFor="admin_entry_random">Случайно</label>
                         </div>
                     </div>

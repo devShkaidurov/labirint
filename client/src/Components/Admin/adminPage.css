@@ -248,6 +248,12 @@ table {
     transition: 0.25s;
 }
 
+#admin-floppy-disk button:hover img {
+    content: url(../../images/saved-hover.svg);
+    scale: 1.05;
+    transition: 0.25s;
+}
+
 #admin-floppy-disk button img {
     height: 50px;
     width: 50px;
@@ -257,9 +263,10 @@ table {
     background-color: green !important;
 }
 
-/* .wall {
+.wall {
     background-color: black !important;
-} */
+    border: 2px solid white;
+}
 
 .start {
     background-color: #b41919 !important;
