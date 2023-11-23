@@ -110,9 +110,11 @@ export const AdminPage = () => {
             setMap(arrayMap);
         }, rej => {
             console.error(rej);
+            Show('Нет соединения с сервером!', 'error', 3000, true);
         })
         .catch(e => {
             console.error(e);
+            Show('Ошибка на сервере!', 'error', 3000, true);
         })
     }
 
@@ -589,8 +591,53 @@ export const AdminPage = () => {
     const manageCreateMaze = () => {
         if (methodCreate === "handle") 
             handleCreateMaze();
-        // else if (methodCreate === "alg") 
-        //     algCreateMaze();
+        else if (methodCreate === "alg") {
+            const startCell = document.getElementsByClassName("start")[0];
+            const finishCell = document.getElementsByClassName("finish")[0];
+            if (alg === 'prima') {
+                    connector.generatePrime({
+                        height: height,
+                        width: width,
+                        start: {
+                            x: startCell.dataset.x,
+                            y: startCell.dataset.y
+                        },
+                        finish: {
+                            x: finishCell.dataset.x,
+                            y: finishCell.dataset.y
+                        }
+                    }).then(async (payload) => {
+                        const newMaze = await payload.json();
+                        setMap(newMaze);
+                    }, rej => {
+                        Show(rej, 'error', 3000);
+                    })
+                    .catch(e => {
+                        Show(e, 'error', 3000);
+                    })
+            } else if (alg === 'backtracking') {
+                connector.generateBT({
+                    height: height,
+                    width: width,
+                    start: {
+                        x: startCell.dataset.x,
+                        y: startCell.dataset.y
+                    },
+                    finish: {
+                        x: finishCell.dataset.x,
+                        y: finishCell.dataset.y
+                    }
+                }).then(async (payload) => {
+                    const newMaze = await payload.json();
+                    setMap(newMaze);
+                }, rej => {
+                    Show(rej, 'error', 3000);
+                })
+                .catch(e => {
+                    Show(e, 'error', 3000);
+                })
+            }
+        }
     }
 
     const handleBuildWall = (e) => {

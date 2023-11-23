@@ -3,6 +3,7 @@ const app = express();
 const port = 7170;
 const { init, authUser, registerUser } = require('./database');
 const { getRandomEntries } = require('./helperMethods');
+const Maze = require('./maze');
 
 app.use(express.json());
 
@@ -87,6 +88,44 @@ app.post('/saveMaze', (req, response) => {
       response.setHeader("Content-Type", "application/json");
       // const entries = getRandomEntries(maze);
       response.end(JSON.stringify({ok: true}));
+  });
+})
+
+app.post('/createPrime', (req, response) => {
+  let data = "";
+  req.on("data", chunk => {
+      data += chunk;
+  });
+  req.on("end", async () => {
+      const payload = JSON.parse(data);
+      const heightMaze = payload.height;
+      const widthMaze = payload.width;
+      const start = payload.start;
+      const finish = payload.finish;
+
+      const instanceMaze = new Maze();
+      const map = instanceMaze.generatePrime(widthMaze, heightMaze, start.y, start.x, finish.y, finish.x);
+      response.setHeader("Content-Type", "application/json");
+      response.end(JSON.stringify(map));
+  });
+})
+
+app.post('/createBT', (req, response) => {
+  let data = "";
+  req.on("data", chunk => {
+      data += chunk;
+  });
+  req.on("end", async () => {
+      const payload = JSON.parse(data);
+      const heightMaze = payload.height;
+      const widthMaze = payload.width;
+      const start = payload.start;
+      const finish = payload.finish;
+
+      const instanceMaze = new Maze();
+      const map = instanceMaze.generateBT(widthMaze, heightMaze, start.y, start.x, finish.y, finish.x);
+      response.setHeader("Content-Type", "application/json");
+      response.end(JSON.stringify(map));
   });
 })
 

@@ -2,6 +2,7 @@ import './register.css';
 import { serverConnector } from '../../serverConnector';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Show }  from '../Noty/Noty';
 
 export const RegisterPage = () => {
     const connector = serverConnector();
@@ -38,6 +39,9 @@ export const RegisterPage = () => {
             }, async (rej) => {
                 const result = await rej.json();
                 console.log("Непредвиденная ошибка: " + result);
+            }).catch(e => {
+                Show('Нет ответа от сервера!', 'error', 3000, true);
+
             });
         } else {
             connector.auth({login: login, pass: pass}).then(async (res) => {
@@ -49,13 +53,17 @@ export const RegisterPage = () => {
                         navigate("/user")
                     }
                 } else {
-                    console.log("Неверный логин или пароль!")
+                    console.log("Неверный логин или пароль!");
+                    Show('Неверный логин или пароль!', 'error', 3000, true);
                 }
             }, async (rej) => {
                 const result = await rej.json();
-                console.log("Непредвиденная ошибка авторизации!")
+                console.log("Непредвиденная ошибка авторизации!");
+                Show('Нет ответа от сервера!', 'error', 3000, true);
                 console.dir(result);
-            });
+            }).catch(e => {
+                Show('Нет ответа от сервера!', 'error', 3000, true);
+            })
         }
     }
 

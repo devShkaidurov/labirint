@@ -1,10 +1,10 @@
 import './noty.css'
 
 export function handleCloseNoty () {
-    if (document.getElementById("admin_bg")) {
+    if (document.getElementById("root")) {
         const divEl = document.getElementById("noty_wrapper");
         if (divEl)
-            document.getElementById("admin_bg").removeChild(divEl);
+            document.getElementById("root").removeChild(divEl);
     }
 }
 
@@ -34,9 +34,9 @@ export function Show (text, type, _time, _closable) {
 
     divWrapper.appendChild(divEl);
     
-    document.getElementById("admin_bg").appendChild(divWrapper);
+    document.getElementById("root").appendChild(divWrapper);
     setTimeout(() => {
-        if (Array.from(document.getElementById("admin_bg").childNodes).includes(divWrapper))
-            document.getElementById("admin_bg").removeChild(divWrapper);
+        if (Array.from(document.getElementById("root").childNodes).includes(divWrapper))
+            document.getElementById("root").removeChild(divWrapper);
     }, time);
 }

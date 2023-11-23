@@ -166,7 +166,7 @@ class Maze {
     randomIntFromInterval(min, max) { 
         return Math.floor(Math.random() * (max - min + 1) + min)
     }
-    generatePrime(x, y) {
+    generatePrime(x, y,startX,startY,finishX,finishY) {
         console.dir(x);
         console.dir(y);
         // generate empty map
@@ -178,13 +178,19 @@ class Maze {
                 map[i][j] = { isWall: true }
             }
         }
+
+        var ans=setNeighbourStartFinish(startX,startY,finishX,finishY,map);
+        var nSx=ans[0][0];
+        var nSy=ans[0][1];
+        var nFx=ans[1][0];
+        var nFy=ans[1][1];
     
         // get random point
-        const randomColumn = this.randomEvenInt(0, x - 1);
-        const randomRow    = this.randomEvenInt(0, y - 1);   
+        // const randomColumn = this.randomEvenInt(0, x - 1);
+        // const randomRow    = this.randomEvenInt(0, y - 1);   
 
-        map[randomColumn][randomRow] = { isWall: false };
-        this.addToVisit(map, needToVisit, randomColumn, randomRow);
+        map[startX][startY] = { isStart: true, isCurrent: true};
+        this.addToVisit(map, needToVisit, nSx, nSy);
 
         while (needToVisit.length > 0) {
             const randomIndex = Math.floor(Math.random() * needToVisit.length);
@@ -197,114 +203,55 @@ class Maze {
             this.addToVisit(map, needToVisit, x, y);
         }
 
-        this.setStartFinish(map);
+        
         console.log(map);
-        return map;
-    }
-
-    generateBT (x, y) {
-        const map = new Array(x);
-
-        for (let i = 0; i < x; i++) {
-            map[i] = new Array(y);
-            for (let j = 0; j < y; j++) {
-                map[i][j] = { isWall: true }
-            }
+        if(map[nFx][nFy].isWall){
+            this.generatePrime(x, y,startX,startY,finishX,finishY);
+        }else{
+            map[finishX][finishY] = { isFinish: true };
+            return map;
         }
-        const WIDTH = x; // Width of the maze (must be odd).
-        const HEIGHT = y; // Height of the maze (must be odd).
-        
-        // Use these characters for displaying the maze:
-        const EMPTY = " ";
-        const MARK = "@";
-        const WALL = "█"; // Character 9608 is ′█′
-        const [NORTH, SOUTH, EAST, WEST] = ["n", "s", "e", "w"];
-        
-        // Create the filled-in maze data structure to start:
-        let maze = {};
-        for (let x = 0; x < WIDTH; x++) {
-            for (let y = 0; y < HEIGHT; y++) {
-                maze[[x, y]] = WALL; // Every space is a wall at first.
-            }
-        }
-        
-        
-        function visit(x, y) {
-            map[x][y] = { isWall: false }
-            maze[[x, y]] = EMPTY; // "Carve out" the space at x, y.
-        
-            while (true) {
-                // Check which neighboring spaces adjacent to
-                // the mark have not been visited already:
-                let unvisitedNeighbors = [];
-                if (y > 1 && !JSON.stringify(hasVisited).includes(JSON.stringify([x, y - 2]))) {
-                    unvisitedNeighbors.push(NORTH);
-                }
-                if (y < HEIGHT - 2 &&
-                !JSON.stringify(hasVisited).includes(JSON.stringify([x, y + 2]))) {
-                    unvisitedNeighbors.push(SOUTH);
-                }
-                if (x > 1 &&
-                !JSON.stringify(hasVisited).includes(JSON.stringify([x - 2, y]))) {
-                    unvisitedNeighbors.push(WEST);
-                }
-                if (x < WIDTH - 2 &&
-                !JSON.stringify(hasVisited).includes(JSON.stringify([x + 2, y]))) {
-                    unvisitedNeighbors.push(EAST);
-                }
-        
-                if (unvisitedNeighbors.length === 0) {
-                    // BASE CASE
-                    // All neighboring spaces have been visited, so this is a
-                    // dead end. Backtrack to an earlier space:
-                    return;
-                } else {
-                    // RECURSIVE CASE
-                    // Randomly pick an unvisited neighbor to visit:
-                    let nextIntersection = unvisitedNeighbors[
-                    Math.floor(Math.random() * unvisitedNeighbors.length)];
-        
-                    // Move the mark to an unvisited neighboring space:
-                    let nextX, nextY;
-                    if (nextIntersection === NORTH) {
-                        nextX = x;
-                        nextY = y - 2;
-                        maze[[x, y - 1]] = EMPTY; // Connecting hallway.
-                        map[x][y-1] = { isWall: false }
-                    } else if (nextIntersection === SOUTH) {
-                        nextX = x;
-                        nextY = y + 2;
-                        maze[[x, y + 1]] = EMPTY; // Connecting hallway.
-                        map[x][y+1] = { isWall: false }
-                    } else if (nextIntersection === WEST) {
-                        nextX = x - 2;
-                        nextY = y;
-                        map[x-1][y] = { isWall: false }
-                        maze[[x - 1, y]] = EMPTY; // Connecting hallway.
-                    } else if (nextIntersection === EAST) {
-                        nextX = x + 2;
-                        nextY = y;
-                        map[x+1][y] = { isWall: false }
-                        maze[[x + 1, y]] = EMPTY; // Connecting hallway.
-                    }
-                    hasVisited.push([nextX, nextY]); // Mark space as visited.
-                    visit(nextX, nextY); // Recursively visit this space.
-                }
-            }
-        }
-        
-        
-        // Carve out the paths in the maze data structure:
-        let hasVisited = [[1, 5],[14,19]]; // Start by visiting the top-left corner.
-        visit(1, 5);
 
-        console.log(map);
-        map[0][5] = { isStart: true, isCurrent: true};
-        map[14][20] = { isFinish: true };//y,x
-        return map;
-        
+        function setNeighbourStartFinish(startX,startY,finishX,finishY,map)
+        {
+            var ans = [];
+            if(startX==0 && startY!=0){
+                ans.push([1,startY])
+            }
+            if(startX===x-1 && startY!=0){
+                ans.push([startX-1,startY]);
+            }
+
+            if(startY==0 && startX!=0){
+                ans.push([startX,1])
+            }
+            if(startY==y-1 & startX!=0){
+                ans.push([startX,startY-1])
+            }
             
+
+            if(finishX==0 && finishY!=0){
+                ans.push([1,finishY])
+            }
+            if(finishX==x-1 && finishY!=0){
+                ans.push([finishX-1,finishY]);
+            }
+
+            if(finishY==0 && finishX!=0){
+                ans.push([finishX,1])
+            }
+            if(finishY==y-1 && finishX!=0){
+                ans.push([finishX,finishY-1])
+            }
+            
+            return ans;
+        }
     }
-    
+
+    generateBT (x, y, startX, startY, finishX, finishY) {
+        return null;
+    }
+ 
 }
+
 module.exports = Maze;

@@ -86,11 +86,47 @@ export const serverConnector = () => {
         })
     }
 
+    function generatePrime (data) {
+        return new Promise ((res, rej) => {
+            const url = 'http://127.0.0.1:7171/createPrime';
+            fetch(url, {
+                method: "POST",
+                body: JSON.stringify(data)
+            }).then((ans) => {
+                res(ans);
+            }, reject => {
+                rej(reject);
+            })
+            .catch(e => {
+                rej(e);
+            })
+        })
+    }
+
+    function generateBT (data) {
+        return new Promise ((res, rej) => {
+            const url = 'http://127.0.0.1:7171/createBT';
+            fetch(url, {
+                method: "POST",
+                body: JSON.stringify(data)
+            }).then((ans) => {
+                res(ans);
+            }, reject => {
+                rej(reject);
+            })
+            .catch(e => {
+                rej(e);
+            })
+        })
+    }
+
     return {
         register,
         auth,
         validateMaze,
         getEntries,
-        saveMaze
+        saveMaze,
+        generatePrime,
+        generateBT
     }
 }
