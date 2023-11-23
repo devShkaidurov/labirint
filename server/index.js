@@ -123,6 +123,7 @@ app.post('/createBT', (req, response) => {
       const finish = payload.finish;
 
       const instanceMaze = new Maze();
+      // const map = instanceMaze.generateBT(widthMaze, heightMaze, 0, 5, 14, 20);
       const map = instanceMaze.generateBT(widthMaze, heightMaze, start.y, start.x, finish.y, finish.x);
       response.setHeader("Content-Type", "application/json");
       response.end(JSON.stringify(map));

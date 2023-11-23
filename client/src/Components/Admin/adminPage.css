@@ -19,7 +19,6 @@
     background: #daecfc;
     min-width: 250px;
     width: 20%;
-    top: 14%;
     left: 30px;
     box-shadow: 0px 0px 5px;
     border-radius: 10px;
@@ -220,7 +219,7 @@ table {
 
 .wall-handle {
     background-color: black !important; 
-    border: solid 2px white !important;
+    border: solid 2px rgb(0, 112, 128) !important;
 }
 
 
@@ -265,17 +264,17 @@ table {
 
 .wall {
     background-color: black !important;
-    border: 2px solid white;
+    border: 2px solid rgb(0, 112, 128);
 }
 
 .start {
     background-color: #b41919 !important;
-    border: 2px solid white;
+    border: 2px solid rgb(0, 112, 128);
 }
 
 .finish {
     background-color: green !important;
-    border: 2px solid white;
+    border: 2px solid rgb(0, 112, 128);
 }
 
 .potential-wall {

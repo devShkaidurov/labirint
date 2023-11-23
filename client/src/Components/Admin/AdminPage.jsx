@@ -10,7 +10,7 @@ import { SaveFormModal, SaveFrom } from '../SaveForm/SaveForm';
 // x = j
 // y = i
 export const AdminPage = () => {
-    const MAXVALUE = 19;
+    const MAXVALUE = 21;
     const MINVALUE = 9;
     const [width, setWidth] = useState(MINVALUE);
     const [height, setHeight] = useState(MINVALUE);
@@ -842,7 +842,6 @@ export const AdminPage = () => {
             </div>
 
 
-            {/* maze field */}
             <div id="admin_maze">
                 <table>
                     <tbody>
@@ -865,11 +864,11 @@ export const AdminPage = () => {
 
                                 if (item.isWall) {
                                     return (
-                                        <td style={{height: heightRow, width: widthRow, backgroundColor: "black", border: 'solid 2px white'}} key={index + "|" + indexOuter} className="wall" data-x={index} data-y={indexOuter} data-border={((index === 0 && indexOuter === (height - 1)) || (index === 0 && indexOuter === 0) || (index === (width - 1) && indexOuter === 0) || (index === (width - 1) && indexOuter === (height - 1))) ? true : false}></td>
+                                        <td style={{height: heightRow, width: widthRow, backgroundColor: "black", border: 'solid 2px rgb(0, 112, 128)'}} key={index + "|" + indexOuter} className="wall" data-x={index} data-y={indexOuter} data-border={((index === 0 && indexOuter === (height - 1)) || (index === 0 && indexOuter === 0) || (index === (width - 1) && indexOuter === 0) || (index === (width - 1) && indexOuter === (height - 1))) ? true : false}></td>
                                     )
                                 } else 
                                     return (
-                                        <td style={{height: heightRow, width: widthRow, backgroundColor: "#007080", border: 'solid 2px white'}} key={index + "|" + indexOuter} data-x={index} data-y={indexOuter}></td>
+                                        <td style={{height: heightRow, width: widthRow, backgroundColor: "#007080", border: 'solid 2px rgb(0, 112, 128)'}} key={index + "|" + indexOuter} data-x={index} data-y={indexOuter}></td>
                                     )
                             })
 

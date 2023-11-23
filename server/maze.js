@@ -20,6 +20,7 @@ class Maze {
         let v  = Math.round(min + Math.random() * (max - min));
         return v % 2 != 0 ? v : this.randomEvenInt(min, max);
     }
+
     addToVisit (map, needToVisit, x, y) {
         if (this.pointInMaze(map, x - 2, y) && map[x - 2][y].isWall) {
             needToVisit.push({
@@ -54,37 +55,27 @@ class Maze {
             map[x][y - 2] = { isWall: false };
         }
     }
+
+
     pointInMaze (map, x, y) {
         const width = map.length;
         const height = map[0].length;
 
         return (x > 0 && x < width && y > 0 && y < height);
     }
-    shuffle (array) {
-        for (let i = 0; i < array.length; i++) {
-            let bufIndex = Math.floor(Math.random(0, array.length));
-            if (bufIndex == i)
-                continue;
+    shuffle(array) {
+        array.sort(() => Math.random() - 0.5);
+    }
 
-            const bufX = array[bufIndex][0];
-            const bufY = array[bufIndex][1];
-
-            array[bufIndex][0] = array[i][0];
-            array[bufIndex][0] = array[i][1];
-
-            array[i][0] = bufX;
-            array[i][1] = bufY;
-        }
-        return array;
-    } 
     connect (map, x, y,needToVisit) {
-        const directions = [
+        var directions = [
             {x: 0, y: -1},
             {x: 1, y: 0},
             {x: 0, y: 1},
             {x: -1, y: 0}
         ];
-
+        directions.sort(() => Math.random() - 0.5);
+        directions.sort(() => Math.random() - 0.5);
         let isFind = false;
         directions.forEach(item => {
             if (isFind)
@@ -166,9 +157,16 @@ class Maze {
     randomIntFromInterval(min, max) { 
         return Math.floor(Math.random() * (max - min + 1) + min)
     }
-    generatePrime(x, y,startX,startY,finishX,finishY) {
-        console.dir(x);
-        console.dir(y);
+
+
+    generatePrime(_x, _y,_startX,_startY,_finishX,_finishY) {
+        const x = parseInt(_x);
+        const y = parseInt(_y);
+        const startX = parseInt(_startX);
+        const startY = parseInt(_startY);
+        const finishX = parseInt(_finishX);
+        const finishY = parseInt(_finishY);
+
         // generate empty map
         const map = new Array(x);
         const needToVisit = [];
@@ -179,18 +177,18 @@ class Maze {
             }
         }
 
-        var ans=setNeighbourStartFinish(startX,startY,finishX,finishY,map);
-        var nSx=ans[0][0];
-        var nSy=ans[0][1];
-        var nFx=ans[1][0];
-        var nFy=ans[1][1];
-    
-        // get random point
-        // const randomColumn = this.randomEvenInt(0, x - 1);
-        // const randomRow    = this.randomEvenInt(0, y - 1);   
+        const ans = this.setNeighbourStartFinish(x, y, startX, startY, finishX, finishY);
+        const nSx=ans[0][0];
+        const nSy=ans[0][1];
+        const nFx=ans[1][0];
+        const nFy=ans[1][1];
 
         map[startX][startY] = { isStart: true, isCurrent: true};
-        this.addToVisit(map, needToVisit, nSx, nSy);
+        needToVisit.push({
+            x: nSx,
+            y: nSy
+        }) 
+
 
         while (needToVisit.length > 0) {
             const randomIndex = Math.floor(Math.random() * needToVisit.length);
@@ -204,54 +202,284 @@ class Maze {
         }
 
         
-        console.log(map);
+        //console.log(map);
         if(map[nFx][nFy].isWall){
-            this.generatePrime(x, y,startX,startY,finishX,finishY);
+            return this.generatePrime(x, y,startX,startY,finishX,finishY);
         }else{
+           // console.log(map);
             map[finishX][finishY] = { isFinish: true };
             return map;
         }
 
-        function setNeighbourStartFinish(startX,startY,finishX,finishY,map)
-        {
-            var ans = [];
-            if(startX==0 && startY!=0){
-                ans.push([1,startY])
-            }
-            if(startX===x-1 && startY!=0){
-                ans.push([startX-1,startY]);
-            }
+    } 
 
-            if(startY==0 && startX!=0){
-                ans.push([startX,1])
+    generateBT (_x, _y,_startX,_startY,_finishX,_finishY) { // корректно работает если задать нечетное положение входов и выходов
+        const x = parseInt(_x);
+        const y = parseInt(_y);
+        const startX = parseInt(_startX);
+        const startY = parseInt(_startY);
+        const finishX = parseInt(_finishX);
+        const finishY = parseInt(_finishY);
+
+        const map = new Array(x);
+        const matrix = new Array(x);
+
+        for (let i = 0; i < x; i++) {
+            map[i] = new Array(y);
+            matrix[i] = new Array(y);
+            for (let j = 0; j < y; j++) {
+                map[i][j] = { isWall: true }
+                matrix[i][j] = 0;
             }
-            if(startY==y-1 & startX!=0){
-                ans.push([startX,startY-1])
+        }
+        const WIDTH = x; // Width of the maze (must be odd).
+        const HEIGHT = y; // Height of the maze (must be odd).
+        
+        // Use these characters for displaying the maze:
+        const EMPTY = " ";
+        const MARK = "@";
+        const WALL = "█"; // Character 9608 is ′█′
+        const [NORTH, SOUTH, EAST, WEST] = ["n", "s", "e", "w"];
+        
+        // Create the filled-in maze data structure to start:
+        let maze = {};
+        for (let i = 0; i < WIDTH; i++) {
+            for (let j = 0; j < HEIGHT; j++) {
+                maze[[i, j]] = WALL; // Every space is a wall at first.
             }
+        }
+        function visit(x, y) {
+            map[x][y] = { isWall: false }
+            matrix[x][y] = 1;
+            maze[[x, y]] = EMPTY; // "Carve out" the space at x, y.
+        
+            while (true) {
+                // Check which neighboring spaces adjacent to
+                // the mark have not been visited already:
+                let unvisitedNeighbors = [];
+                if (y > 1 && !JSON.stringify(hasVisited).includes(JSON.stringify([x, y - 2]))){
+                    unvisitedNeighbors.push(NORTH);
+                }
+                if (y < HEIGHT - 2 &&
+                !JSON.stringify(hasVisited).includes(JSON.stringify([x, y + 2]))) {
+                    unvisitedNeighbors.push(SOUTH);
+                }
+                if (x > 1 &&
+                !JSON.stringify(hasVisited).includes(JSON.stringify([x - 2, y]))) {
+                    unvisitedNeighbors.push(WEST);
+                }
+                if (x < WIDTH - 2 &&
+                !JSON.stringify(hasVisited).includes(JSON.stringify([x + 2, y]))) {
+                    unvisitedNeighbors.push(EAST);
+                }
+        
+                if (unvisitedNeighbors.length === 0) {
+                    // BASE CASE
+                    // All neighboring spaces have been visited, so this is a
+                    // dead end. Backtrack to an earlier space:
+                    return;
+                } else {
+                    // RECURSIVE CASE
+                    // Randomly pick an unvisited neighbor to visit:
+                    let nextIntersection = unvisitedNeighbors[
+                    Math.floor(Math.random() * unvisitedNeighbors.length)];
+        
+                    // Move the mark to an unvisited neighboring space:
+                    let nextX, nextY;
+                    if (nextIntersection === NORTH) {
+                        nextX = x;
+                        nextY = y - 2;
+                        maze[[x, y - 1]] = EMPTY; // Connecting hallway.
+                        map[x][y-1] = { isWall: false }
+                        matrix[x][y-1]=1;
+                    } else if (nextIntersection === SOUTH) {
+                        nextX = x;
+                        nextY = y + 2;
+                        maze[[x, y + 1]] = EMPTY; // Connecting hallway.
+                        matrix[x][y+1]=1;
+                        map[x][y+1] = { isWall: false }
+                    } else if (nextIntersection === WEST) {
+                        nextX = x - 2;
+                        nextY = y;
+                        map[x-1][y] = { isWall: false }
+                        maze[[x - 1, y]] = EMPTY; // Connecting hallway.
+                        matrix[x-1][y]=1;
+                    } else if (nextIntersection === EAST) {
+                        nextX = x + 2;
+                        nextY = y;
+                        map[x+1][y] = { isWall: false }
+                        maze[[x + 1, y]] = EMPTY; // Connecting hallway.
+                        matrix[x+1][y]=1;
+                    }
+                    hasVisited.push([nextX, nextY]); // Mark space as visited.
+                    visit(nextX, nextY); // Recursively visit this space.
+                }
+            }
+        }
+
+        let neighborStartFinish = this.setNeighbourStartFinish(x,y,startX,startY,finishX,finishY);
+        let hasVisited = neighborStartFinish ; 
+        visit(neighborStartFinish[0][0],neighborStartFinish[0][1]);
+
+        map[parseInt(startX)][parseInt(startY)] = { isStart: true, isCurrent: true};
+        map[parseInt(finishX)][parseInt(finishY)] = { isFinish: true }
+
+        let nFx = neighborStartFinish[1][0];
+        let nFy = neighborStartFinish[1][1];
+
+        if (map[nFx][nFy].isWall) {
+            console.log('!');
+            return this.generateBT(x, y,startX,startY,finishX,finishY);
+        } else {
+            return map;
+        }
+        
+    }
+    
+
+
+    setNeighbourStartFinish(x,y,startX,startY,finishX,finishY) {
+        console.dir(startX);
+        console.dir(startY);
+
+        console.dir(x);
+        console.dir(y);
+        var ans = [];
+        if (startX==0 && startY!=0){
+            ans.push([1,startY])
+        } 
+         if(startX===x-1 && startY!=0){
+            ans.push([startX-1,startY]);
+        } 
+         if(startY==0 && startX!=0){
+            ans.push([startX,1])
+        } 
+         if(startY==y-1 & startX!=0){
+            ans.push([startX,startY-1])
+        }
+        
+
+        if (finishX==0 && finishY!=0){
+            ans.push([1,finishY])
+        } 
+         if(finishX==x-1 && finishY!=0){
+            ans.push([finishX-1,finishY]);
+        } 
+         if(finishY==0 && finishX!=0){
+            ans.push([finishX,1])
+        } 
+         if(finishY==y-1 && finishX!=0){
+            ans.push([finishX,finishY-1])
+        }
+        console.dir(ans);
+        return ans;
+    }
+
+    WawePath(obj,startX,startY,finishX,finishY){
+        var {matrix,map} = obj;
+        let x = matrix.length;
+        let y = matrix[0].length;
+        var neig = this.setNeighbourStartFinish(x,y,startX,startY,finishX,finishY)
+        var src = [neig[0][0],neig[0][1]];
+        var dest = [neig[1][0],neig[1][1]];
+       
+
+        // var matrix =[
+        //     [0,0,0,0,0,0,0],
+        //     [0,1,1,0,0,0,0],
+        //     [0,0,1,1,1,1,0],
+        //     [0,0,0,0,0,1,0],
+        //     [0,1,0,0,0,1,0],
+        //     [0,1,1,1,1,1,0],
+        //     [0,0,0,0,0,0,0],
+        //     ];
+
+        //     var src = [1,1];
+        //     var dest = [4,1];
+    // Список возможных направлений
+    let row = [-1, 0, 0, 1];
+    let col = [0, -1, 1, 0];
+    // Ввод
+    //     matrix - матрица заполненная 0 (стена) и 1 (пустота)
+    //     visited - посещенные ячейки
+    //     row - ряд
+    //     col - колонка
+    // Вывод
+    //     возможно ли переместиться на позицию
+    function checkValid(matrix, visited, row, col) {
+        let isValid = row >= 0 && row < matrix.length;
+        isValid = isValid && col >= 0 && col < matrix[0].length;
+        return isValid && matrix[row][col] == 1 && !visited[row][col];
+    }
+    // Ввод
+    //     matrix - матрица заполненная 0 (стена) и 1 (пустота)
+    //     src - источник в формате (x, y)
+    //     dest - место назначения в формате (x, y)
+    // Вывод
+    //     длина кратчайшего пути от источника до пункта назначения
+    function leeAlgorithm(matrix, src, dest) {
+        let [srcX, srcY] = src;
+        let [destX, destY] = dest;
+
+        if (matrix[srcX][srcY] == 0 || matrix[destX][destY] == 0) {// начинает с самих точек старта и конца, а нужно с соседей ихих
+            return -1;
+        }
+        let height = matrix.length, width = matrix[0].length;
+        let visited = [];
+        for (let destY = 0; destY < height; destY++) {
+            let buff = [];
+            for (let destX = 0; destX < width; destX++) {
+                buff.push(false);
+            }
+            visited.push(buff);
+        }
+        let queue = [];
+        visited[srcX][srcY] = true;
+        queue.push([srcX, srcY, 0,[[srcX,srcY]]]);
+        let minDist = Number.MAX_VALUE;
+        let soul;
+        let paths = [];
+        let i=0;
+        while (queue.length != 0 && i<15) {
             
+            let [srcX, srcY, dist,path] = queue.shift();
+            console.log(path);
 
-            if(finishX==0 && finishY!=0){
-                ans.push([1,finishY])
+            if (srcX == destX && srcY == destY) {
+                minDist = dist;
+                soul = path;
+                break;
             }
-            if(finishX==x-1 && finishY!=0){
-                ans.push([finishX-1,finishY]);
+            for (let k = 0; k < row.length; k++) {
+                if (checkValid(matrix, visited, srcX + row[k], srcY + col[k])) {
+                    visited[srcX + row[k]][srcY + col[k]] = true;
+                    path.push([srcX + row[k],srcY + col[k]]);
+                    queue.push([srcX + row[k], srcY + col[k], dist + 1,path]);
+                }else{
+                    // map[srcX][srcY] = { isStart: true};
+                }
             }
-
-            if(finishY==0 && finishX!=0){
-                ans.push([finishX,1])
-            }
-            if(finishY==y-1 && finishX!=0){
-                ans.push([finishX,finishY-1])
-            }
-            
-            return ans;
+            paths.push(path);
+            i++;
+        }
+    
+        if (minDist != Number.MAX_VALUE) {
+            return soul;
+        } else {
+            return -1;
         }
     }
 
-    generateBT (x, y, startX, startY, finishX, finishY) {
-        return null;
+    let path = (leeAlgorithm(matrix, src, dest)); // правильный путь
+    for(let i=0;i<path.length;i++){  // отображение правильного пути
+        let [x,y]=path[i];
+        map[x][y] = { isStart: true};
     }
- 
-}
+    map[neig[1][0]][neig[1][1]] = {isStart: true}
+    return {map:map,matrix:matrix}
+    }
 
+    
+        
+    }
 module.exports = Maze;

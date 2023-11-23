@@ -30,10 +30,12 @@ export const RegisterPage = () => {
                 const result = await res.json();
                 if (result.register) {
                     console.log("Successful register");
+                    Show("Вы успешно зарегистировались, теперь можете войти!", 'success', 3000, true);
                     setIsRegister(false);
                 } else {
                     if (result.msg) {
                         console.log("Ошибка: " + result.msg);
+                        Show(result.msg, 'error', 3000, true);
                     }
                 }
             }, async (rej) => {
