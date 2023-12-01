@@ -41,3 +41,47 @@
 #confirm-container button img {
     margin-right: 5px;
 }
+
+#confirm-container-alg {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    width: 250px;
+    height: 60px;
+    background-color: #007080;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px black;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.25s;
+}
+
+#confirm-container-alg button {
+    font-family: cursive;
+    font-size: 12pt;
+    border: none;
+    background: #1DF0C6;
+    padding: 2px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+#confirm-container-alg button:hover {
+    box-shadow: 0px 0px 5px black;
+}
+
+#confirm-container-alg button:active {
+    background-color: rgb(1, 77, 88);
+    color: #02899d;
+}
+
+#confirm-container-alg button img {
+    margin-right: 5px;
+}

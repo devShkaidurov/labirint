@@ -7,4 +7,11 @@ create table if not exists Users
 	isAdmin tinyint(1) not null
 );
 
-#insert Users(login, pass, isAdmin) values ();
+create table if not exists Mazes
+(
+    mazeName varchar(50) primary key not null,
+    creationTime datetime not null,
+    structure JSON not null
+);
+
+#insert Users(login, pass, isAdmin) values ("admin", "admin", 1);

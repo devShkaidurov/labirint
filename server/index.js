@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const port = 7170;
-const { init, authUser, registerUser } = require('./database');
+const { init, authUser, registerUser, saveMaze } = require('./database');
 const { getRandomEntries } = require('./helperMethods');
 const Maze = require('./maze');
 
@@ -59,21 +59,6 @@ app.post('/getRandomEntry', (req, response) => {
   });
 })
 
-// unrealize methods
-app.post('/validateMaze', (req, response) => {
-  let data = "";
-  req.on("data", chunk => {
-      data += chunk;
-  });
-  req.on("end", async () => {
-      const payload = JSON.parse(data);
-      response.setHeader("Content-Type", "application/json");
-      const isValid = true;
-      response.end(JSON.stringify(isValid));
-  });
-})
-
-
 app.post('/saveMaze', (req, response) => {
   let data = "";
   req.on("data", chunk => {
@@ -81,13 +66,15 @@ app.post('/saveMaze', (req, response) => {
   });
   req.on("end", async () => {
       const payload = JSON.parse(data);
-      const maze = payload.maze;
-      const name = payload.name;
-      console.dir(maze);
-      console.dir(name);
       response.setHeader("Content-Type", "application/json");
-      // const entries = getRandomEntries(maze);
-      response.end(JSON.stringify({ok: true}));
+      saveMaze(payload).then(res => {
+        response.end(JSON.stringify(res));
+      }, rej => {
+        response.end(JSON.stringify(rej));
+      })
+      .catch(err => {
+        response.end(JSON.stringify(err));
+      })
   });
 })
 
@@ -104,9 +91,24 @@ app.post('/createPrime', (req, response) => {
       const finish = payload.finish;
 
       const instanceMaze = new Maze();
-      const map = instanceMaze.generatePrime(widthMaze, heightMaze, start.y, start.x, finish.y, finish.x);
+      const map = instanceMaze.generateAnaloguePrime(widthMaze, heightMaze, 1, start.y, start.x, finish.y, finish.x);
       response.setHeader("Content-Type", "application/json");
       response.end(JSON.stringify(map));
+  });
+})
+
+
+// unrealize methods
+app.post('/validateMaze', (req, response) => {
+  let data = "";
+  req.on("data", chunk => {
+      data += chunk;
+  });
+  req.on("end", async () => {
+      const payload = JSON.parse(data);
+      response.setHeader("Content-Type", "application/json");
+      const isValid = true;
+      response.end(JSON.stringify(isValid));
   });
 })
 

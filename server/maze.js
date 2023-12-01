@@ -213,6 +213,226 @@ class Maze {
 
     } 
 
+    generateAnaloguePrime (x, y, tractorsNumber = 1,startX,startY,finishX,finishY) {
+        const columnsNumber = parseInt(x)-2;
+        const rowsNumber = parseInt(y)-2;
+        startX = parseInt(startX)
+        startY =parseInt(startY)
+        finishX =parseInt(finishX)
+        finishY =parseInt(finishY)
+
+        const map = []
+        const tractors = []
+
+        for (let y = 0; y < rowsNumber; y++) {
+            const row = []
+
+            for (let x = 0; x < columnsNumber; x++) {
+                row.push('wall')
+            }
+
+            map.push(row)
+        }
+
+        const _startX = getRandomFrom(Array(columnsNumber).fill(0).map((item, index) => index).filter(x => isEven(x)))
+        const _startY = getRandomFrom(Array(rowsNumber).fill(0).map((item, index) => index).filter(x => isEven(x)))
+
+        // создаем тракторы
+        for (let i = 0; i < tractorsNumber; i++) {
+            tractors.push({ x: _startX, y: _startY })
+        }
+
+        // сделаем ячейку, в которой изначально стоит трактор, пустой
+        setField(_startX, _startY, 'space')
+
+        // если лабиринт ещё не готов, рисовать трактор и регистрировать функцию tick() ещё раз
+        while (!isMaze()) {
+            moveTractors()
+        }
+        const kart = new Array(columnsNumber+2);
+
+        for (let i = 0; i < columnsNumber+2; i++) {
+            kart[i] = new Array(rowsNumber+2);
+            for (let j = 0; j < rowsNumber+2; j++) {
+                kart[i][j] = { isWall: true }
+            }
+        }
+        for (let i = 0; i < columnsNumber; i++) {
+            for (let j = 0; j < rowsNumber; j++) {
+                if(map[i][j]=='space'){
+                    kart[i+1][j+1]={ isWall: false };
+                }
+            }
+        }
+        console.log(startX,startY,finishX,finishY);
+        var ans=setNeighbourStartFinish(startX,startY,finishX,finishY);
+        // console.log(ans);
+        var nSx=ans[0][0];
+        var nSy=ans[0][1];
+        var nFx=ans[1][0];
+        var nFy=ans[1][1];
+
+        if(!kart[nSx][nSy].isWall && !kart[nFx][nFy].isWall)
+        {
+            console.log("готово");
+            kart[startX][startY] = { isStart: true, isCurrent: true};
+            kart[finishX][finishY] = { isFinish: true }
+            return kart;
+        }else{
+            console.log("перезапуск");
+            return this.generateAnaloguePrime(x, y, tractorsNumber = 1,startX,startY,finishX,finishY);
+        }
+
+
+
+        // получить значение из матрицы
+        function getField (x, y) {
+            if (x < 0 || x > columnsNumber || y < 0 || y > rowsNumber) {
+                return null
+            }
+
+            return map[y][x]
+        }
+
+        // записать значение в матрицу
+        function setField (x, y, value) {
+            if (x < 0 || x > columnsNumber || y < 0 || y > rowsNumber) {
+                return null
+            }
+
+            map[y][x] = value
+        }
+
+        // функция возвращает случайный элемент из переданного ей массива
+        function getRandomFrom (array) {
+            // получаем случайным образом индекс элемента массива
+            // число будет в диапазоне от 0 до количества элементов в массиве - 1
+            const index = Math.floor(Math.random() * array.length)
+            // возвращаем элемент массива с полученным случайным индексом
+            return array[index]
+        }
+
+        /*
+            функция проверяет четное число или нет
+            если возвращает true - четное
+        */
+        function isEven (n) {
+            return n % 2 === 0
+        }
+
+        // функция проверяет, готов лабиринт или ещё нет
+        // возвращает true, если лабиринт готов, false если ещё нет
+        function isMaze () {
+            for (let x = 0; x < columnsNumber; x++) {
+                for (let y = 0; y < rowsNumber; y++) {
+                    if (isEven(x) && isEven(y) && getField(x, y) === 'wall') {
+                        return false
+                    }
+                }
+            }
+
+            return true
+        }
+
+        /*
+            функция заставляет трактора двигаться
+            трактор должен двигаться на 2 клетки
+            если вторая клетка со стеной, то нужно очистить первую и вторую
+        */
+        function moveTractors () {
+            for (const tractor of tractors) {
+                // массив с возможными направлениями трактора
+                const directs = []
+
+                if (tractor.x > 0) {
+                    directs.push('left')
+                }
+
+                if (tractor.x < columnsNumber - 2) {
+                    directs.push('right')
+                }
+
+                if (tractor.y > 0) {
+                    directs.push('up')
+                }
+
+                if (tractor.y < rowsNumber - 2) {
+                    directs.push('down')
+                }
+
+                // случайным образом выбрать направление, в котором можно пойти
+                const direct = getRandomFrom(directs)
+
+                switch (direct) {
+                    case 'left':
+                        if (getField(tractor.x - 2, tractor.y) === 'wall') {
+                            setField(tractor.x - 1, tractor.y, 'space')
+                            setField(tractor.x - 2, tractor.y, 'space')
+                        }
+                        tractor.x -= 2
+                        break
+                    case 'right':
+                        if (getField(tractor.x + 2, tractor.y) === 'wall') {
+                            setField(tractor.x + 1, tractor.y, 'space')
+                            setField(tractor.x + 2, tractor.y, 'space')
+                        }
+                        tractor.x += 2
+                        break
+                    case 'up':
+                        if (getField(tractor.x, tractor.y - 2) === 'wall') {
+                            setField(tractor.x, tractor.y - 1, 'space')
+                            setField(tractor.x, tractor.y - 2, 'space')
+                        }
+                        tractor.y -= 2
+                        break
+                    case 'down':
+                        if (getField(tractor.x, tractor.y + 2) === 'wall') {
+                            setField(tractor.x, tractor.y + 1, 'space')
+                            setField(tractor.x, tractor.y + 2, 'space')
+                        }
+                        tractor.y += 2
+                        break
+                }
+            }
+        }
+
+        function setNeighbourStartFinish(startX,startY,finishX,finishY) {
+            
+            var ans = [];
+            if(startX==0 && startY!=0){
+                ans.push([1,startY])
+            }
+            if(startX===x-1 && startY!=0){
+                ans.push([startX-1,startY]);
+            }
+
+            if(startY==0 && startX!=0){
+                ans.push([startX,1])
+            }
+            if(startY==y-1 & startX!=0){
+                ans.push([startX,startY-1])
+            }
+            
+
+            if(finishX==0 && finishY!=0){
+                ans.push([1,finishY])
+            }
+            if(finishX==x-1 && finishY!=0){
+                ans.push([finishX-1,finishY]);
+            }
+
+            if(finishY==0 && finishX!=0){
+                ans.push([finishX,1])
+            }
+            if(finishY==y-1 && finishX!=0){
+                ans.push([finishX,finishY-1])
+            }
+            console.log(ans);
+            console.log(x,y);
+            return ans;
+        }
+    }
+
     generateBT (_x, _y,_startX,_startY,_finishX,_finishY) { // корректно работает если задать нечетное положение входов и выходов
         const x = parseInt(_x);
         const y = parseInt(_y);

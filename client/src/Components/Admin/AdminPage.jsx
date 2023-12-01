@@ -5,11 +5,13 @@ import { useState } from 'react';
 import { ConfirmForm } from './ConfirmForm/ConfirmForm';
 import { serverConnector } from '../../serverConnector';
 import floppyDisk from '../../images/save.svg';
-import { SaveFormModal, SaveFrom } from '../SaveForm/SaveForm';
+import { SaveFormModal } from '../SaveForm/SaveForm';
+import { ConfirmFormAlg } from './ConfirmForm/ConfirmFormAlg';
 
 // x = j
 // y = i
 export const AdminPage = () => {
+
     const MAXVALUE = 21;
     const MINVALUE = 9;
     const [width, setWidth] = useState(MINVALUE);
@@ -18,10 +20,24 @@ export const AdminPage = () => {
     const [entryType, setEntryType] = useState();
     const [methodCreate, setMethodCreate] = useState();
     const [alg, setAlg] = useState();
-    const [map, setMap] = useState();
     const connector = serverConnector();
     const [activeSaveModal, setActiveSaveModal] = useState(false);
     const [nameMaze, setNameMaze] = useState();
+
+    const initCreateMap = () => {
+        const arrayMap = new Array(height);
+        for (let i = 0; i < height; i++) {
+            arrayMap[i] = new Array(width);
+            for (let j = 0; j < width; j++) {
+                if (i == 0 || i == height - 1 || j == 0 || j == width - 1)
+                    arrayMap[i][j] = { isWall: true }
+                else 
+                    arrayMap[i][j] = { isWall: false } 
+            }
+        }
+        return arrayMap;
+    }
+    const [map, setMap] = useState(initCreateMap());
 
     const handleSetHeight = (e) => {
         const value = e.target.value;
@@ -588,6 +604,27 @@ export const AdminPage = () => {
         setMap(arrayMap);
     }
 
+    const handleClearMap = () => {
+        const arrayMap = new Array(height);
+        for (let i = 0; i < height; i++) {
+            arrayMap[i] = new Array(width);
+            for (let j = 0; j < width; j++) {
+                if (i == 0 || i == height - 1 || j == 0 || j == width - 1)
+                    arrayMap[i][j] = { isWall: true }
+                else 
+                    arrayMap[i][j] = { isWall: false } 
+                
+                if (map[i][j].isFinish)
+                    arrayMap[i][j] = { isFinish: true };
+
+                if (map[i][j].isStart) 
+                    arrayMap[i][j] = { isStart: true };
+
+            }
+        }
+        setMap(arrayMap);
+    }
+
     const manageCreateMaze = () => {
         if (methodCreate === "handle") 
             handleCreateMaze();
@@ -609,6 +646,7 @@ export const AdminPage = () => {
                     }).then(async (payload) => {
                         const newMaze = await payload.json();
                         setMap(newMaze);
+                        automaticShowAcceptMenu();
                     }, rej => {
                         Show(rej, 'error', 3000);
                     })
@@ -630,6 +668,7 @@ export const AdminPage = () => {
                 }).then(async (payload) => {
                     const newMaze = await payload.json();
                     setMap(newMaze);
+                    automaticShowAcceptMenu();
                 }, rej => {
                     Show(rej, 'error', 3000);
                 })
@@ -638,6 +677,41 @@ export const AdminPage = () => {
                 })
             }
         }
+    }
+
+    const automaticShowAcceptMenu = () => {
+        const el = document.getElementById('confirm-container-alg');
+        if (parseInt(el.style.opacity) !== 1) {
+            el.style.opacity = 1;
+            el.style.pointerEvents = 'all';
+        }
+    }
+
+    const handleReadyCFA = () => {
+        handleCloseNoty();
+        const saveBtn = document.getElementById("admin-floppy-disk");
+        saveBtn.style.pointerEvents = 'all';
+        saveBtn.style.opacity = 1;
+
+        const el = document.getElementById('confirm-container-alg');
+        if (parseInt(el.style.opacity) === 1) {
+            el.style.opacity = 0;
+            el.style.pointerEvents = 'none';
+        }
+
+        Show('Ваш лабиринт верен, можете его сохранить!', 'success', 3000, true);
+    }
+
+    const handleRejectCFA = () => {
+        const el = document.getElementById('confirm-container-alg');
+        if (parseInt(el.style.opacity) === 1) {
+            el.style.opacity = 0;
+            el.style.pointerEvents = 'none';
+        }
+        setAlg();
+        setMethodCreate();
+        setBlurAction(true);
+        handleClearMap();
     }
 
     const handleBuildWall = (e) => {
@@ -747,11 +821,16 @@ export const AdminPage = () => {
     const handleFinallySaveMaze = () => {
         setActiveSaveModal(false);
         connector.saveMaze({
-            maze: map,
-            name: nameMaze
+            structure : map,
+            nameMaze  : nameMaze
         }).then(async (payload) => {
             const ans = await payload.json();
-            Show('Лабиринт успешно сохранен в базу данных!', 'success', 3000);
+            console.dir(ans)
+            if (ans.isSaved)
+                Show('Лабиринт успешно сохранен в базу данных!', 'success', 3000);
+            else 
+                Show(ans.msg, 'error', 5000, true);
+
         }, rej => {
             console.error(rej);
             Show(rej, 'error', 3000);
@@ -847,8 +926,9 @@ export const AdminPage = () => {
                     <tbody>
                     {
                         map?.map((array, indexOuter) => {
-                            const heightRow = `${document.getElementById("admin_maze")?.clientHeight / height}px`;
-                            const widthRow  = `${document.getElementById("admin_maze")?.clientWidth / width}px`;
+                            const heightRow = `${610 / height}px`;
+                            const widthRow  = `${610 / width}px`;
+                            console.dir(heightRow);
                             let row = array.map((item, index) => {
                                 if (item.isStart) {
                                     return (
@@ -884,6 +964,7 @@ export const AdminPage = () => {
             </div>
 
             <ConfirmForm handleReady={handleReadyCF} handleReject={handleRejectCF}/>
+            <ConfirmFormAlg handleReady={handleReadyCFA} handleReject={handleRejectCFA}/>
            
 
             <div id='admin-floppy-disk'>

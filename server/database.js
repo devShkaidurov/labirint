@@ -68,8 +68,33 @@ function registerUser (payload) {
     })
 }
 
+function saveMaze (payload) {
+    const nameMaze = payload.nameMaze;
+    const structure = JSON.stringify(payload.structure);
+    return new Promise ((res, rej) => {
+        connection.query(`insert Mazes(mazeName, creationTime, structure) values ('${nameMaze}', NOW(), '${structure}')`, (err, results, fields) => {
+            if (err && err.errno === 1062) {
+                rej ({
+                    isSaved: false,
+                    msg: "Лабиринт под таким именем уже существует"
+                });
+            }
+            if (err) {
+                rej ({
+                    isSaved: false,
+                    msg: "Ошибка!" + err
+                })
+            }
+            res ({
+                isSaved: true
+            })
+        })
+    })
+}
+
 module.exports = {
     init,
     authUser,
     registerUser,
+    saveMaze
 }
