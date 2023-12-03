@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const port = 7170;
-const { init, authUser, registerUser, saveMaze } = require('./database');
+const { init, authUser, registerUser, saveMaze, getMazes } = require('./database');
 const { getRandomEntries } = require('./helperMethods');
 const Maze = require('./maze');
 
@@ -95,6 +95,18 @@ app.post('/createPrime', (req, response) => {
       response.setHeader("Content-Type", "application/json");
       response.end(JSON.stringify(map));
   });
+})
+
+app.get('/getMazes', (req, response) => {
+  response.setHeader("Content-Type", "application/json");
+  getMazes().then(res => {
+    response.end(JSON.stringify(res));
+  }, rej => {
+    response.end(JSON.stringify(rej));
+  })
+  .catch(err => {
+    response.end(JSON.stringify(err));
+  })
 })
 
 

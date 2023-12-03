@@ -92,9 +92,24 @@ function saveMaze (payload) {
     })
 }
 
+function getMazes () {
+    return new Promise ((res, rej) => {
+        connection.query('select * from Mazes order by creationTime', (err, results, fields) => {
+            if (err) {
+                rej ({
+                    msg: "Ошибка! " + err
+                })
+            }
+
+            res(results);
+        })
+    })
+}
+
 module.exports = {
     init,
     authUser,
     registerUser,
-    saveMaze
+    saveMaze,
+    getMazes
 }

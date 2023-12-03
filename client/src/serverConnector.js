@@ -120,6 +120,23 @@ export const serverConnector = () => {
         })
     }
 
+    // functions for user
+    function getMazes () {
+        return new Promise ((res, rej) => {
+            const url = 'http://127.0.0.1:7171/getMazes';
+            fetch(url, {
+                method: "GET",
+            }).then((ans) => {
+                res(ans);
+            }, reject => {
+                rej(reject);
+            })
+            .catch(e => {
+                rej(e);
+            })
+        })
+    }
+
     return {
         register,
         auth,
@@ -127,6 +144,7 @@ export const serverConnector = () => {
         getEntries,
         saveMaze,
         generatePrime,
-        generateBT
+        generateBT,
+        getMazes
     }
 }

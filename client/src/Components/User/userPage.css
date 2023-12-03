@@ -1,0 +1,85 @@
+#user-maze-name-container {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    padding-top: 8px;
+    font-size: 13pt;
+}
+
+#user-options-maze-solution {
+    position: absolute;
+    background: #daecfc;
+    min-width: 250px;
+    width: 20%;
+    left: 30px;
+    box-shadow: 0px 0px 5px;
+    border-radius: 10px;
+}
+
+.user_option {
+    min-width: 230px;
+    width: 90%;
+    min-height: 100px;
+    background: #97c2e7;
+    margin: 15px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 3px;
+    display: flex;
+    flex-direction: column;
+}
+
+.user_option_header {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    height: 20px;
+}
+
+.user_option_body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin-top: 10px;
+    margin-left: 5px;
+}
+
+.user_option_header span {
+    text-align: center;
+}
+
+#user_settings_action {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-top: 7px;
+}
+
+#user_settings_action button {
+    font-size: 16px;
+    font-family: cursive;
+    background: #97c2e7;
+    border-radius: 5px;
+    box-shadow: 0px 0px 3px;
+    border: none;
+    color: black;
+    cursor: pointer;
+}
+
+.blurArea {
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+#user_settings_header {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    font-size: 19px;
+    font-family: cursive;
+}
