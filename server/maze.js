@@ -151,7 +151,7 @@ class Maze {
             });
         }
 
-        map[startX][startY] = { isStart: true, isCurrent: true};
+        map[startX][startY] = { isStart: true};
         map[finishX][finishY] = { isFinish: true };
     }
     randomIntFromInterval(min, max) { 
@@ -183,7 +183,7 @@ class Maze {
         const nFx=ans[1][0];
         const nFy=ans[1][1];
 
-        map[startX][startY] = { isStart: true, isCurrent: true};
+        map[startX][startY] = { isStart: true};
         needToVisit.push({
             x: nSx,
             y: nSy
@@ -275,7 +275,7 @@ class Maze {
         if(!kart[nSx][nSy].isWall && !kart[nFx][nFy].isWall)
         {
             console.log("готово");
-            kart[startX][startY] = { isStart: true, isCurrent: true};
+            kart[startX][startY] = { isStart: true};
             kart[finishX][finishY] = { isFinish: true }
             return kart;
         }else{
@@ -541,7 +541,7 @@ class Maze {
         let hasVisited = neighborStartFinish ; 
         visit(neighborStartFinish[0][0],neighborStartFinish[0][1]);
 
-        map[parseInt(startX)][parseInt(startY)] = { isStart: true, isCurrent: true};
+        map[parseInt(startX)][parseInt(startY)] = { isStart: true};
         map[parseInt(finishX)][parseInt(finishY)] = { isFinish: true }
 
         let nFx = neighborStartFinish[1][0];

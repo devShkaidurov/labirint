@@ -144,7 +144,19 @@ app.post('/createBT', (req, response) => {
   });
 })
 
-
+app.post('/getPath', (req, response) => {
+  let data = "";
+  req.on("data", chunk => {
+      data += chunk;
+  });
+  req.on("end", async () => {
+      const payload = JSON.parse(data);
+      const alg  = payload.alg;
+      const maze = payload.maze;
+      response.setHeader("Content-Type", "application/json");
+      response.end(JSON.stringify({ ok: false }));
+  });
+})
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`)
 })

@@ -137,6 +137,23 @@ export const serverConnector = () => {
         })
     }
 
+    function getPath (payload) {
+        return new Promise ((res, rej) => {
+            const url = 'http://127.0.0.1:7171/getPath';
+            fetch(url, {
+                method: "POST",
+                body: JSON.stringify(payload)
+            }).then((ans) => {
+                res(ans);
+            }, reject => {
+                rej(reject);
+            })
+            .catch(e => {
+                rej(e);
+            })
+        })
+    }
+
     return {
         register,
         auth,
@@ -145,6 +162,7 @@ export const serverConnector = () => {
         saveMaze,
         generatePrime,
         generateBT,
-        getMazes
+        getMazes,
+        getPath
     }
 }

@@ -83,3 +83,7 @@
     font-size: 19px;
     font-family: cursive;
 }
+
+.current {
+    background-color: aquamarine;
+}
