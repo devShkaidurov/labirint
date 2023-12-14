@@ -195,20 +195,21 @@ table {
 
 .avaliable {
     cursor: pointer;
-    animation: flashing-avaliable 1.5s ease infinite;
+    animation: flashing-avaliable 1s ease infinite;
+    border: solid 2px rgb(0, 80, 0) !important;
 }
 
 @keyframes flashing-avaliable {
     0% {
-        box-shadow: 0px 0px green;
+        box-shadow: 0px 0px rgb(0, 80, 0);
     }
 
     50% {
-        box-shadow: 0px 0px 15px green;
+        box-shadow: 0px 0px 5px green;
     }
 
     100% {
-        box-shadow: 0px 0px green;
+        box-shadow: 0px 0px rgb(0, 80, 0);
     }
 }
 

@@ -12,7 +12,7 @@ import { ConfirmFormAlg } from './ConfirmForm/ConfirmFormAlg';
 // y = i
 export const AdminPage = () => {
 
-    const MAXVALUE = 21;
+    const MAXVALUE = 101;
     const MINVALUE = 9;
     const [width, setWidth] = useState(MINVALUE);
     const [height, setHeight] = useState(MINVALUE);
@@ -51,28 +51,46 @@ export const AdminPage = () => {
 
     const handleBlurWidth = (e) => {
         const value = e.target.value;
+
         if (value < MINVALUE) {
             setWidth(MINVALUE);
             Show(`Ширина не может быть меньше ${MINVALUE}!`, 'error');
+            createTester();
         } else if (value > MAXVALUE) {
             setWidth(MAXVALUE);
             Show(`Ширина не может быть больше ${MAXVALUE}!`, 'error');
-
+            createTester();
         }
-        createTester();
+        if (value % 2 === 0) {
+            Show(`Нельзя вводить четные значения!`, 'error');
+            setWidth(value - 1);
+            createTester();
+            return;
+        }
     }
 
     const handleBlurHeight = (e) => {
         const value = e.target.value;
+
+
         if (value < MINVALUE) {
             setHeight(MINVALUE);
             Show(`Высота не может быть меньше ${MINVALUE}!`, 'error');
+            createTester();
+            return
         } else if (value > MAXVALUE) {
             setHeight(MAXVALUE);
             Show(`Высота не может быть больше ${MAXVALUE}!`, 'error');
-        
+            createTester();
+            return
         }
-        createTester();
+
+        if (value % 2 === 0) {
+            Show(`Нельзя вводить четные значения!`, 'error');
+            setHeight(value - 1);
+            createTester();
+            return;
+        }
     }
 
     const handleChangeEntry = (e) => {

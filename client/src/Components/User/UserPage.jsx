@@ -3,6 +3,8 @@ import { useState, useCallback } from 'react';
 import { serverConnector } from '../../serverConnector';
 import { Show }  from '../Noty/Noty';
 import './userPage.css';
+import { useEffect } from "react";
+import step from '../../images/step.svg';
 
 export const UserPage = () => {
     const [maze, setMaze] = useState();
@@ -12,11 +14,40 @@ export const UserPage = () => {
     const [type, setType] = useState();
     const [speed, setSpeed] = useState(0.5);
     const [viewOptions, setViewOptions] = useState(false);
-    const FIRST_SOLVE_ALG = "Первый алгоритм";
+    const FIRST_SOLVE_ALG = "Алгоритм Ли";
     const SECOND_SOLVE_ALG = "Второй алгоритм";
     const FIRST_SOLVE_TYPE = "Пошагово";
     const SECOND_SOLVE_TYPE = "Непрерывно";
     const connector = serverConnector();
+    const [path, setPath] = useState();
+    const [stepSolve, setStepSolve] = useState();
+    const [indexPath, setIndexPath] = useState();
+
+    useEffect(() => {
+        if (!path || stepSolve === true)
+            return;
+        for (let index = 0; index < path.length; index++) {
+            setTimeout(() => {
+                const currentCellPath = path[index];
+                const x = currentCellPath[1];
+                const y = currentCellPath[0];
+                const newMap = new Array(maze.length);
+                for (let i = 0; i < maze.length; i++) {
+                    newMap[i] = new Array(maze[0].length)
+                    for (let j = 0; j < maze[0].length; j++) {
+                        newMap[i][j] = maze[i][j];
+                        if (i === x && j === y) 
+                            newMap[i][j].isCurrent = true;
+                    }
+                }
+                setMaze(newMap);
+            }, (200 * index + 100) / (speed * 10))
+        }
+
+        setTimeout(() => {
+            Show("Лабиринт пройден!", "success", 2000, false);
+        }, (200 * path.length + 150) / (speed * 10))
+    }, [path])
 
 
     const handleChooseMaze = (chooserMaze) => {
@@ -71,7 +102,12 @@ export const UserPage = () => {
             // send data to server for work with algs
             connector.getPath({alg: alg, maze: maze}).then( async (res) => {
                 const payload = await res.json();
-                console.dir(payload);
+                const path = payload.path;
+                setPath(path);
+                if (type === FIRST_SOLVE_TYPE) {
+                    setStepSolve(true);
+                    setIndexPath(0);
+                }
             }, rej => {
                 Show(rej, 'error', 5000, true);
             })
@@ -79,6 +115,28 @@ export const UserPage = () => {
                 Show(e, 'error', 5000, true);
             })   
         }
+    }
+
+    const handleDoStep = () => {
+        if (indexPath === path.length) {
+            Show("Лабиринт пройден!", "success", 2000, false);
+            setStepSolve(false);
+            return;
+        }
+        const currentCellPath = path[indexPath];
+        const x = currentCellPath[1];
+        const y = currentCellPath[0];
+        const newMap = new Array(maze.length);
+        for (let i = 0; i < maze.length; i++) {
+            newMap[i] = new Array(maze[0].length)
+            for (let j = 0; j < maze[0].length; j++) {
+                newMap[i][j] = maze[i][j];
+                if (i === x && j === y) 
+                    newMap[i][j].isCurrent = true;
+            }
+        }
+        setMaze(newMap);
+        setIndexPath(prev => prev + 1)
     }
 
     const solveMaze = () => {
@@ -290,6 +348,15 @@ export const UserPage = () => {
 
 
             <MazeChooser handleChooseMaze={handleChooseMaze}/>
+            {
+                stepSolve ? 
+                    <div id='user-step-container' onClick={handleDoStep}>
+                        <span>Шаг</span>
+                        <img src={step}></img>
+                    </div>
+                :
+                null
+            }
         </div>
     )
 }

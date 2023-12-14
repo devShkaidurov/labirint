@@ -152,9 +152,45 @@ app.post('/getPath', (req, response) => {
   req.on("end", async () => {
       const payload = JSON.parse(data);
       const alg  = payload.alg;
-      const maze = payload.maze;
-      response.setHeader("Content-Type", "application/json");
-      response.end(JSON.stringify({ ok: false }));
+      let maze = payload.maze;
+      const instanceMaze = new Maze();
+      if (alg === "Алгоритм Ли") {
+        const y = maze.length;
+        const x = maze[0].length;
+        const map = new Array(x);
+        for (let k = 0; k < x; k++) {
+          map[k] = new Array(y);
+          for (let j = 0; j < y; j++)
+            map[k][j] = {};
+        }
+        let start = {};
+        let finish = {};
+        maze.forEach((row, y) => {
+          console.dir(row);
+          row.forEach((cell, x) => {
+            if (cell.isWall)
+              map[x][y] = 0;
+            else 
+              map[x][y] = 1;
+
+            if (cell.isStart) {
+              start = {x: x, y: y};
+              map[x][y] = 0;
+            }
+            if (cell.isFinish) {
+              finish = {x: x, y: y};
+              map[x][y] = 0;
+            }
+          })
+        })
+
+        const path = instanceMaze.leeAlgorithm(map, y, x, start.x, start.y, finish.x, finish.y);
+        console.dir("Answer: ")
+        console.dir(path);
+        maze = instanceMaze.OverlayLee(maze, path);
+        response.setHeader("Content-Type", "application/json");
+        response.end(JSON.stringify({ maze: maze, path: path }));
+      }
   });
 })
 app.listen(port, () => {

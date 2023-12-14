@@ -637,69 +637,138 @@ class Maze {
     //     dest - место назначения в формате (x, y)
     // Вывод
     //     длина кратчайшего пути от источника до пункта назначения
-    function leeAlgorithm(matrix, src, dest) {
-        let [srcX, srcY] = src;
-        let [destX, destY] = dest;
-
-        if (matrix[srcX][srcY] == 0 || matrix[destX][destY] == 0) {// начинает с самих точек старта и конца, а нужно с соседей ихих
-            return -1;
-        }
-        let height = matrix.length, width = matrix[0].length;
-        let visited = [];
-        for (let destY = 0; destY < height; destY++) {
-            let buff = [];
-            for (let destX = 0; destX < width; destX++) {
-                buff.push(false);
-            }
-            visited.push(buff);
-        }
-        let queue = [];
-        visited[srcX][srcY] = true;
-        queue.push([srcX, srcY, 0,[[srcX,srcY]]]);
-        let minDist = Number.MAX_VALUE;
-        let soul;
-        let paths = [];
-        let i=0;
-        while (queue.length != 0 && i<15) {
-            
-            let [srcX, srcY, dist,path] = queue.shift();
-            console.log(path);
-
-            if (srcX == destX && srcY == destY) {
-                minDist = dist;
-                soul = path;
-                break;
-            }
-            for (let k = 0; k < row.length; k++) {
-                if (checkValid(matrix, visited, srcX + row[k], srcY + col[k])) {
-                    visited[srcX + row[k]][srcY + col[k]] = true;
-                    path.push([srcX + row[k],srcY + col[k]]);
-                    queue.push([srcX + row[k], srcY + col[k], dist + 1,path]);
-                }else{
-                    // map[srcX][srcY] = { isStart: true};
-                }
-            }
-            paths.push(path);
-            i++;
-        }
     
-        if (minDist != Number.MAX_VALUE) {
-            return soul;
-        } else {
-            return -1;
-        }
-    }
-
-    let path = (leeAlgorithm(matrix, src, dest)); // правильный путь
-    for(let i=0;i<path.length;i++){  // отображение правильного пути
-        let [x,y]=path[i];
-        map[x][y] = { isStart: true};
-    }
-    map[neig[1][0]][neig[1][1]] = {isStart: true}
-    return {map:map,matrix:matrix}
     }
 
     
-        
+// Ввод
+//     matrix - матрица заполненная 0 (стена) и 1 (пустота)
+//     src - источник в формате (x, y)
+//     dest - место назначения в формате (x, y)
+// Вывод
+//     длина кратчайшего пути от источника до пункта назначения
+
+
+leeAlgorithm (matrix, x, y, startX, startY, finishX, finishY) {
+
+    
+    let row = [-1, 0, 0, 1];
+    let col = [0, -1, 1, 0];
+    // Ввод
+    //     matrix - матрица заполненная 0 (стена) и 1 (пустота)
+    //     visited - посещенные ячейки
+    //     row - ряд
+    //     col - колонка
+    // Вывод
+    //     возможно ли переместиться на позицию
+    function checkValid(matrix, visited, row, col) {
+        let isValid = row >= 0 && row < matrix.length;
+        isValid = isValid && col >= 0 && col < matrix[0].length;
+        return isValid && matrix[row][col] == 1 && !visited[row][col];
     }
+
+    console.dir("=== params ===")
+    console.dir(x);
+    console.dir(y);
+    console.dir(startX);
+    console.dir(startY);
+    console.dir(finishX);
+    console.dir(finishY);
+    console.dir("======")
+
+    var neighbor = this.setNeighbourStartFinish(x,y,startX,startY,finishX,finishY)
+    // let [srcX, srcY] = src;
+    // let [destX, destY] = dest;
+    let srcX = neighbor[0][0];
+    let srcY = neighbor[0][1];
+
+    let destX = neighbor[1][0];
+    let destY = neighbor[1][1];
+
+    // console.log(srcX,srcY,destX,destY);
+    // console.log(matrix[srcX][srcY]);
+    if (matrix[srcX][srcY] == 0 || matrix[destX][destY] == 0) {
+        return -1;
+    }
+
+    let height = matrix.length, width = matrix[0].length;
+
+    let visited = [];
+    for (let destY = 0; destY < height; destY++) {
+        let buff = [];
+        for (let destX = 0; destX < width; destX++) {
+            buff.push(false);
+        }
+        visited.push(buff);
+    }
+
+    let queue = [];
+    let q = [];
+    let path = []
+
+    visited[srcX][srcY] = true;
+
+    queue.push([srcX, srcY, 0]);
+
+    let minDist = Number.MAX_VALUE;
+    
+    while (queue.length != 0) {
+        let [srcX, srcY, dist] = queue.shift();
+
+        if (srcX == destX && srcY == destY) {
+            minDist = dist;
+            break;
+        }
+
+        for (let k = 0; k < row.length; k++) {
+            if (checkValid(matrix, visited, srcX + row[k], srcY + col[k])) {
+                visited[srcX + row[k]][srcY + col[k]] = true;
+                q.push([srcX + row[k], srcY + col[k], dist + 1]);
+                queue.push([srcX + row[k], srcY + col[k], dist + 1]);
+            }
+        }
+    }
+    q = q.reverse();
+    q.push([srcX, srcY,0]);
+    var lq = q.length-1;
+    var inx;
+
+    for(let i=0;i<lq;i++){
+        if(q[i][0]==destX && q[i][1]==destY && q[i][2]==minDist){
+            inx = i;
+        }
+    }
+    q.splice(0,inx) //Вырезал лишнее, чтобы точка финиша была первая в массиве.
+    lq--;
+
+    let prev = undefined;
+    const finallyPath = [];
+    for (let i = 0; i < q.length; i++) {
+        if (prev === undefined) {
+            prev = q[i];
+            finallyPath.push(q[i]);
+        } else if (Math.abs(prev[0] - q[i][0]) + Math.abs(prev[1] - q[i][1]) === 1) {
+            prev = q[i];
+            finallyPath.push(q[i]);
+        }
+    }
+
+    if (minDist != Number.MAX_VALUE) {
+        return finallyPath;
+    } else {
+        return -1;
+    }
+}
+
+OverlayLee(map,path) {
+    var temp = path.length;
+    for(let i=0;i<temp;i++){
+        var x = path[i][0];
+        var y = path[i][1];
+        map[y][x].isCurrent = true;
+    }
+    return map;
+}
+
+}
 module.exports = Maze;
