@@ -10,6 +10,7 @@ import winter from '../../images/winter.svg';
 import spring from '../../images/spring.svg';
 import summer from '../../images/summer.svg';
 import autumn from '../../images/autumn.svg';
+import Utils from '../../Utils/utils';
 
 export const UserPage = () => {
     const [maze, setMaze] = useState();
@@ -194,16 +195,20 @@ export const UserPage = () => {
         const y = Number(document.getElementById("person").dataset.x);
         const x = Number(document.getElementById("person").dataset.y);
         if (dir == 'a') {
-            if(!checkOnValid(x, y - 1))
-                return;            
+            if(!checkOnValid(x, y - 1, (finishMsg) => {
+                Show(finishMsg.msg, "success", 3000, false);
+            }))
+                return;             
             const newMap = maze.slice(0);
             newMap[x][y - 1].isCurrent = true;
             newMap[x][y].isCurrent = false;
             console.dir(newMap);
             setMaze(newMap);
         } else if (dir == 'd') {
-            if(!checkOnValid(x, y + 1))
-                return;
+            if(!checkOnValid(x, y + 1, (finishMsg) => {
+                Show(finishMsg.msg, "success", 3000, false);
+            }))
+                return; 
             const newMap = maze.slice(0);
             newMap[x][y + 1].isCurrent = true;
             newMap[x][y].isCurrent = false;
@@ -212,16 +217,20 @@ export const UserPage = () => {
             console.dir(checkOnValid(x + 1, y));
             console.dir(x + 1);
             console.dir(y);
-            if(!checkOnValid(x + 1, y))
-                return;
+            if(!checkOnValid(x + 1, y, (finishMsg) => {
+                Show(finishMsg.msg, "success", 3000, false);
+            }))
+                return; 
             const newMap = maze.slice(0);
             newMap[x + 1][y].isCurrent = true;
             newMap[x][y].isCurrent = false;
             console.dir(newMap);
             setMaze(newMap);
         } else if (dir == 'w') {
-            if(!checkOnValid(x - 1, y))
-                return;
+            if(!checkOnValid(x - 1, y, (finishMsg) => {
+                Show(finishMsg.msg, "success", 3000, false);
+            }))
+                return; 
             const newMap = maze.slice(0);
             newMap[x - 1][y].isCurrent = true;
             newMap[x][y].isCurrent = false;
@@ -229,11 +238,18 @@ export const UserPage = () => {
         }
     }
 
-    const checkOnValid = (x, y) => {
+    const checkOnValid = (x, y, finishCallback = Utils.emptyMoc) => {
         console.dir("1st: " + (x <= 0 || x >= maze.length || y <= 0 || y >= maze.length));
         console.dir(maze)
+
+        if (maze[x][y].isFinish) {
+            finishCallback({ msg: "Вы успешно прошли лабиринт!" });
+            return true;
+        }
+
         if (x <= 0 || x >= maze.length || y <= 0 || y >= maze.length)
             return false;
+
 
         if (maze[x][y].isWall) 
             return false;
