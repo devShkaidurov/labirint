@@ -5,6 +5,11 @@ import { Show }  from '../Noty/Noty';
 import './userPage.css';
 import { useEffect } from "react";
 import step from '../../images/step.svg';
+import { Theme } from "../Theme/Theme";
+import winter from '../../images/winter.svg';
+import spring from '../../images/spring.svg';
+import summer from '../../images/summer.svg';
+import autumn from '../../images/autumn.svg';
 
 export const UserPage = () => {
     const [maze, setMaze] = useState();
@@ -22,6 +27,16 @@ export const UserPage = () => {
     const [path, setPath] = useState();
     const [stepSolve, setStepSolve] = useState();
     const [indexPath, setIndexPath] = useState();
+    const [theme, setTheme] = useState("no-theme");
+    const [update, setUpdate] = useState(0);
+
+    const themes = {
+        "winter" : winter,
+        "spring" : spring,
+        "autumn" : autumn,
+        "summer" : summer
+    };
+
 
     useEffect(() => {
         if (!path || stepSolve === true)
@@ -151,6 +166,7 @@ export const UserPage = () => {
                     cell.isCurrent = true;
             })
         })
+        setUpdate(update + 1);
     }
 
     const scrollCallback = useCallback((event) => { 
@@ -302,6 +318,7 @@ export const UserPage = () => {
                     {
                         maze ?
                             maze.map((array, indexOuter) => {
+                                console.dir("Theme: " + theme)
                                 const heightRow = `${610 / maze.length}px`;
                                 const widthRow  = `${610 / array.length}px`;
                                 const length = maze.length;
@@ -309,7 +326,7 @@ export const UserPage = () => {
                                 let row = array.map((item, index) => {
                                     if (item.isCurrent) {
                                         return (
-                                            <td style={{height: heightRow, width: widthRow}} key={index + "|" + indexOuter} className="current" data-x={index} data-y={indexOuter} data-border={((index === 0 && indexOuter === (length - 1)) || (index === 0 && indexOuter === 0) || (index === (width - 1) && indexOuter === 0) || (index === (width - 1) && indexOuter === (maze.length - 1))) ? true : false}></td>
+                                            <td style={{height: heightRow, width: widthRow}} key={index + "|" + indexOuter} className={`current ${item.isFinish ? "wall finish" : null} ${item.isStart ? "wall start" : null}`} data-x={index} data-y={indexOuter} data-border={((index === 0 && indexOuter === (length - 1)) || (index === 0 && indexOuter === 0) || (index === (width - 1) && indexOuter === 0) || (index === (width - 1) && indexOuter === (maze.length - 1))) ? true : false}><img src={themes[theme]}></img></td>
                                         )
                                     }
 
@@ -325,9 +342,10 @@ export const UserPage = () => {
                                         )
                                     }
 
+
                                     if (item.isWall) {
                                         return (
-                                            <td style={{height: heightRow, width: widthRow, backgroundColor: "black", border: 'solid 2px rgb(0, 112, 128)'}} key={index + "|" + indexOuter} className="wall" data-x={index} data-y={indexOuter} data-border={((index === 0 && indexOuter === (length - 1)) || (index === 0 && indexOuter === 0) || (index === (width - 1) && indexOuter === 0) || (index === (width - 1) && indexOuter === (length - 1))) ? true : false}></td>
+                                            <td style={{height: heightRow, width: widthRow, backgroundColor: "black", border: 'solid 2px rgb(0, 112, 128)'}} key={index + "|" + indexOuter} className={`wall ${theme}-cell`} data-x={index} data-y={indexOuter} data-border={((index === 0 && indexOuter === (length - 1)) || (index === 0 && indexOuter === 0) || (index === (width - 1) && indexOuter === 0) || (index === (width - 1) && indexOuter === (length - 1))) ? true : false}></td>
                                         )
                                     } else 
                                         return (
@@ -348,6 +366,7 @@ export const UserPage = () => {
 
 
             <MazeChooser handleChooseMaze={handleChooseMaze}/>
+
             {
                 stepSolve ? 
                     <div id='user-step-container' onClick={handleDoStep}>
@@ -357,6 +376,210 @@ export const UserPage = () => {
                 :
                 null
             }
+
+            <Theme setTheme={setTheme}/>
+
+            {/* show */}
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
+            <div class="snow"></div>
         </div>
     )
 }

@@ -118,8 +118,9 @@ app.post('/validateMaze', (req, response) => {
   });
   req.on("end", async () => {
       const payload = JSON.parse(data);
+      const instanceMaze = new Maze();
+      const isValid = instanceMaze.checkOnValidMaze(payload);
       response.setHeader("Content-Type", "application/json");
-      const isValid = true;
       response.end(JSON.stringify(isValid));
   });
 })

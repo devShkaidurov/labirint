@@ -67,6 +67,7 @@ export const AdminPage = () => {
             createTester();
             return;
         }
+        createTester();
     }
 
     const handleBlurHeight = (e) => {
@@ -91,6 +92,7 @@ export const AdminPage = () => {
             createTester();
             return;
         }
+        createTester();
     }
 
     const handleChangeEntry = (e) => {

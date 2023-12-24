@@ -36,18 +36,18 @@ export const serverConnector = () => {
 
     function validateMaze (maze) {
         return new Promise((res, rej) => {
-            // const url = 'http://127.0.0.1:7171/validateMaze';
-            // fetch(url, {
-            //     method: "POST",
-            //     body: JSON.stringify(maze)
-            // }).then(ans => {
-            //     res(ans);
-            // }, reject => {
-            //     rej(reject);
-            // })
-            // .catch(e => {
-            //     rej(e);
-            // })
+            const url = 'http://127.0.0.1:7171/validateMaze';
+            fetch(url, {
+                method: "POST",
+                body: JSON.stringify(maze)
+            }).then(ans => {
+                res(ans);
+            }, reject => {
+                rej(reject);
+            })
+            .catch(e => {
+                rej(e);
+            })
             res()
         })
     }

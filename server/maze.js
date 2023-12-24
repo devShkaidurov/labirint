@@ -770,5 +770,75 @@ OverlayLee(map,path) {
     return map;
 }
 
+checkOnValidMaze (map) {
+    let isValid = true;
+    const startCell = {};
+    map.forEach((row, y) => {
+        row.forEach((cell, x) => {
+            if (cell.isStart) {
+                startCell.x = x;
+                startCell.y = y;
+                return;
+            }
+        })
+    });
+
+    if (startCell.x === 0) {
+        startCell.x = 1;
+    } else if (startCell.x === map.length - 1) {
+        startCell.x = map.length - 2;
+    } else if (startCell.y === 0) {
+        startCell.y = 1;
+    } else if (startCell.y === map[0].length - 1) {
+        startCell.y = map[0].length - 2;
+    }
+
+    const visited = [];
+    this.doStep (map, visited, startCell);
+    console.dir(visited);
+
+}
+
+doStep (map, visited, cell) {
+    console.dir(visited);
+    const directions = [
+        { x: 0,  y: 1},
+        { x: 0,  y: -1},
+        { x: -1, y: 0},
+        { x: 1,  y: 0},
+    ];
+
+    directions.forEach(direction => {
+        let newX = cell.x + direction.x; 
+        let newY = cell.y + direction.y;
+        let prevCell = undefined;
+        while (this.pointInMaze(map, newX, newY) && map[newX][newY].isWall) {
+            visited.push({ x: newX, y: newY });
+            prevCell = { x: newX, y: newY };
+            newX = newX + direction.x;
+            newY = newY + direction.y;
+        }
+
+        if (prevCell && !visited.find(item => { return item.x === prevCell.x && item.y === prevCell.y}))
+            this.doStep (map, visited, prevCell);
+    })
+}
+
 }
 module.exports = Maze;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
