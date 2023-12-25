@@ -772,8 +772,8 @@ export const AdminPage = () => {
             arrayMap[el.dataset.y][el.dataset.x].isWall = true;
         })
         connector.validateMaze(arrayMap).then(async (result) => {
-            // const isValid = await result.json();
-            const isValid = true;
+            const payload = await result.json();
+            const isValid = payload.isValid;
             const saveBtn = document.getElementById("admin-floppy-disk");
             if (isValid) {
                 saveBtn.style.pointerEvents = 'all';

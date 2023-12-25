@@ -433,137 +433,112 @@ class Maze {
         }
     }
 
-    generateBT (_x, _y,_startX,_startY,_finishX,_finishY) { // корректно работает если задать нечетное положение входов и выходов
+    generateBT (_x,_y,_startX,_startY,_finishX,_finishY) {
         const x = parseInt(_x);
         const y = parseInt(_y);
         const startX = parseInt(_startX);
         const startY = parseInt(_startY);
         const finishX = parseInt(_finishX);
         const finishY = parseInt(_finishY);
+        // Размеры лабиринта
+        console.log(x,y);
+        const rows = parseInt(x)-2; // размер поля без стен
+        const cols = parseInt(y)-2;
 
-        const map = new Array(x);
-        const matrix = new Array(x);
+        console.log(rows,cols);
+        // Создаем пустой лабиринт
+        const maze = Array.from({ length: rows }, () =>
+        Array.from({ length: cols }, () => ({ isWall: true }))
+        );
 
-        for (let i = 0; i < x; i++) {
-            map[i] = new Array(y);
-            matrix[i] = new Array(y);
-            for (let j = 0; j < y; j++) {
-                map[i][j] = { isWall: true }
-                matrix[i][j] = 0;
-            }
-        }
-        const WIDTH = x; // Width of the maze (must be odd).
-        const HEIGHT = y; // Height of the maze (must be odd).
-        
-        // Use these characters for displaying the maze:
-        const EMPTY = " ";
-        const MARK = "@";
-        const WALL = "█"; // Character 9608 is ′█′
-        const [NORTH, SOUTH, EAST, WEST] = ["n", "s", "e", "w"];
-        
-        // Create the filled-in maze data structure to start:
-        let maze = {};
-        for (let i = 0; i < WIDTH; i++) {
-            for (let j = 0; j < HEIGHT; j++) {
-                maze[[i, j]] = WALL; // Every space is a wall at first.
-            }
-        }
-        function visit(x, y) {
-            map[x][y] = { isWall: false }
-            matrix[x][y] = 1;
-            maze[[x, y]] = EMPTY; // "Carve out" the space at x, y.
-        
-            while (true) {
-                // Check which neighboring spaces adjacent to
-                // the mark have not been visited already:
-                let unvisitedNeighbors = [];
-                if (y > 1 && !JSON.stringify(hasVisited).includes(JSON.stringify([x, y - 2]))){
-                    unvisitedNeighbors.push(NORTH);
-                }
-                if (y < HEIGHT - 2 &&
-                !JSON.stringify(hasVisited).includes(JSON.stringify([x, y + 2]))) {
-                    unvisitedNeighbors.push(SOUTH);
-                }
-                if (x > 1 &&
-                !JSON.stringify(hasVisited).includes(JSON.stringify([x - 2, y]))) {
-                    unvisitedNeighbors.push(WEST);
-                }
-                if (x < WIDTH - 2 &&
-                !JSON.stringify(hasVisited).includes(JSON.stringify([x + 2, y]))) {
-                    unvisitedNeighbors.push(EAST);
-                }
-        
-                if (unvisitedNeighbors.length === 0) {
-                    // BASE CASE
-                    // All neighboring spaces have been visited, so this is a
-                    // dead end. Backtrack to an earlier space:
-                    return;
-                } else {
-                    // RECURSIVE CASE
-                    // Randomly pick an unvisited neighbor to visit:
-                    let nextIntersection = unvisitedNeighbors[
-                    Math.floor(Math.random() * unvisitedNeighbors.length)];
-        
-                    // Move the mark to an unvisited neighboring space:
-                    let nextX, nextY;
-                    if (nextIntersection === NORTH) {
-                        nextX = x;
-                        nextY = y - 2;
-                        maze[[x, y - 1]] = EMPTY; // Connecting hallway.
-                        map[x][y-1] = { isWall: false }
-                        matrix[x][y-1]=1;
-                    } else if (nextIntersection === SOUTH) {
-                        nextX = x;
-                        nextY = y + 2;
-                        maze[[x, y + 1]] = EMPTY; // Connecting hallway.
-                        matrix[x][y+1]=1;
-                        map[x][y+1] = { isWall: false }
-                    } else if (nextIntersection === WEST) {
-                        nextX = x - 2;
-                        nextY = y;
-                        map[x-1][y] = { isWall: false }
-                        maze[[x - 1, y]] = EMPTY; // Connecting hallway.
-                        matrix[x-1][y]=1;
-                    } else if (nextIntersection === EAST) {
-                        nextX = x + 2;
-                        nextY = y;
-                        map[x+1][y] = { isWall: false }
-                        maze[[x + 1, y]] = EMPTY; // Connecting hallway.
-                        matrix[x+1][y]=1;
-                    }
-                    hasVisited.push([nextX, nextY]); // Mark space as visited.
-                    visit(nextX, nextY); // Recursively visit this space.
-                }
-            }
+        // Начальные координаты (левый верхний угол)
+        const startRow = 0;
+        const startCol = 0;
+
+        // Вызываем функцию для генерации лабиринта
+        generateMaze(startRow, startCol);
+
+        // Функция для проверки, что координаты находятся в пределах лабиринта
+        function isValidCell(row, col) {
+        return row >= 0 && col >= 0 && row < rows && col < cols;
         }
 
-        let neighborStartFinish = this.setNeighbourStartFinish(x,y,startX,startY,finishX,finishY);
-        let hasVisited = neighborStartFinish ; 
-        visit(neighborStartFinish[0][0],neighborStartFinish[0][1]);
+        // Функция для генерации лабиринта с использованием алгоритма бектрекинга
+        function generateMaze(row, col) {
+        // Помечаем текущую ячейку как проходимую
+        maze[row][col].isWall = false;
 
-        map[parseInt(startX)][parseInt(startY)] = { isStart: true};
-        map[parseInt(finishX)][parseInt(finishY)] = { isFinish: true }
+        // Список направлений (вверх, вправо, вниз, влево)
+        const directions = [
+            { row: -2, col: 0 },
+            { row: 0, col: 2 },
+            { row: 2, col: 0 },
+            { row: 0, col: -2 }
+        ];
 
-        let nFx = neighborStartFinish[1][0];
-        let nFy = neighborStartFinish[1][1];
+        // Перемешиваем направления случайным образом
+        directions.sort(() => Math.random() - 0.5);
 
-        if (map[nFx][nFy].isWall) {
-            console.log('!');
-            return this.generateBT(x, y,startX,startY,finishX,finishY);
-        } else {
-            return map;
+        // Проходимся по каждому направлению
+        for (const dir of directions) {
+            const newRow = row + dir.row;
+            const newCol = col + dir.col;
+
+            // Проверяем, что новая ячейка в пределах лабиринта и не посещена
+            if (isValidCell(newRow, newCol) && maze[newRow][newCol].isWall) {
+            // Помечаем промежуточные ячейки как проходимые
+            maze[row + dir.row / 2][col + dir.col / 2].isWall = false;
+
+            // Рекурсивный вызов для новой ячейки
+            generateMaze(newRow, newCol);
+            }
         }
         
     }
+
+    
+    const kart = new Array(x);
+    for (let i = 0; i < x; i++) {
+        kart[i] = new Array(y);
+        for (let j = 0; j < y; j++) {
+            kart[i][j] = { isWall: true }
+        }
+    }
+
+    for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+            if(maze[i][j].isWall==false){
+                kart[i+1][j+1]={ isWall: false };
+            }
+            else{
+                kart[i+1][j+1]={ isWall: true };
+            }
+        }
+    }
+
+    var ans=this.setNeighbourStartFinish(x,y,startX,startY,finishX,finishY);
+    // console.log(ans);
+    var nSx=ans[0][0];
+    var nSy=ans[0][1];
+        var nFx=ans[1][0];
+    var nFy=ans[1][1];
+
+    if(!kart[nSx][nSy].isWall && !kart[nFx][nFy].isWall)
+    {
+        console.log("готово");
+        kart[startX][startY] = { isStart: true, isPath: true};
+        kart[finishX][finishY] = { isFinish: true }
+        return kart;
+    }else{
+        console.log("перезапуск");
+        return this.generateBT(x,y,startX,startY,finishX,finishY);
+    }
+    
+}
     
 
 
     setNeighbourStartFinish(x,y,startX,startY,finishX,finishY) {
-        console.dir(startX);
-        console.dir(startY);
-
-        console.dir(x);
-        console.dir(y);
         var ans = [];
         if (startX==0 && startY!=0){
             ans.push([1,startY])
@@ -765,39 +740,74 @@ OverlayLee(map,path) {
     for(let i=0;i<temp;i++){
         var x = path[i][0];
         var y = path[i][1];
-        map[y][x].isCurrent = true;
+        map[y][x].isPath = true;
     }
     return map;
 }
 
-checkOnValidMaze (map) {
-    let isValid = true;
-    const startCell = {};
-    map.forEach((row, y) => {
-        row.forEach((cell, x) => {
-            if (cell.isStart) {
-                startCell.x = x;
-                startCell.y = y;
-                return;
-            }
-        })
-    });
-
-    if (startCell.x === 0) {
-        startCell.x = 1;
-    } else if (startCell.x === map.length - 1) {
-        startCell.x = map.length - 2;
-    } else if (startCell.y === 0) {
-        startCell.y = 1;
-    } else if (startCell.y === map[0].length - 1) {
-        startCell.y = map[0].length - 2;
-    }
-
+checkOnValidMaze (maze) {
+    const numRows = maze.length;
+    const numCols = maze[0].length;
+  
+    // Помечаем все стены как непосещенные
     const visited = [];
-    this.doStep (map, visited, startCell);
-    console.dir(visited);
-
-}
+    for (let i = 0; i < numRows; i++) {
+      visited.push(new Array(numCols).fill(false));
+    }
+  
+    // Выбираем случайную стартовую точку
+    const startRow = Math.floor(Math.random() * (numRows - 2)) + 1;
+    const startCol = Math.floor(Math.random() * (numCols - 2)) + 1;
+  
+    const stack = [];
+    stack.push([startRow, startCol]);
+    visited[startRow][startCol] = true;
+  
+    while (stack.length > 0) {
+      const [currentRow, currentCol] = stack.pop();
+      const neighbors = getUnvisitedNeighbors(currentRow, currentCol);
+  
+      if (neighbors.length > 0) {
+        stack.push([currentRow, currentCol]);
+  
+        // Выбираем случайного соседа и убираем стену между текущей ячейкой и соседом
+        const [nextRow, nextCol] = neighbors[Math.floor(Math.random() * neighbors.length)];
+        maze[Math.floor((currentRow + nextRow) / 2)][Math.floor((currentCol + nextCol) / 2)].isWall = false;
+  
+        // Помечаем соседа как посещенного
+        visited[nextRow][nextCol] = true;
+  
+        // Переходим к соседу
+        stack.push([nextRow, nextCol]);
+        visited[nextRow][nextCol] = true;
+      }
+    }
+  
+    // Проверяем, что все ячейки лабиринта были посещены
+    for (let i = 1; i < numRows - 1; i += 2) {
+      for (let j = 1; j < numCols - 1; j += 2) {
+        if (!visited[i][j]) {
+          console.error("Лабиринт не идеальный. Некоторые ячейки не были посещены.");
+          return false;
+        }
+      }
+    }
+  
+    console.log("Лабиринт идеальный!");
+    return true;
+  
+    // Вспомогательная функция для получения непосещенных соседей
+    function getUnvisitedNeighbors(row, col) {
+      const neighbors = [];
+  
+      if (row - 2 > 0 && !visited[row - 2][col]) neighbors.push([row - 2, col]);
+      if (row + 2 < numRows - 1 && !visited[row + 2][col]) neighbors.push([row + 2, col]);
+      if (col - 2 > 0 && !visited[row][col - 2]) neighbors.push([row, col - 2]);
+      if (col + 2 < numCols - 1 && !visited[row][col + 2]) neighbors.push([row, col + 2]);
+  
+      return neighbors;
+    }
+  }
 
 doStep (map, visited, cell) {
     console.dir(visited);
@@ -824,6 +834,39 @@ doStep (map, visited, cell) {
     })
 }
 
+isValidMove(maze, row, col) {
+    const rows = maze.length;
+    const cols = maze[0].length;
+    return row >= 0 && col >= 0 && row < rows && col < cols && !maze[row][col].isWall;
+}
+// Функция для поиска выхода из лабиринта
+findExit(maze, row, col) {
+    console.dir("find")
+    const rows = maze.length;
+    const cols = maze[0].length;
+    // Если достигнута выходная ячейка
+    if (row === rows - 1 && col === cols - 1) {
+        maze[row][col].isPath = true; // Помечаем выход
+        console.log("Выход найден!");
+        return maze;
+    }
+
+    console.dir("Is valid move: " + this.isValidMove(maze, row, col));
+    // Если текущая ячейка проходима
+    if (this.isValidMove(maze, row, col)) {
+        maze[row][col].isPath = true; // Помечаем, что посетили эту ячейку
+        console.log("+1");
+        // Рекурсивный вызов для движения вверх, вправо, вниз и влево
+        if (this.findExit(maze, row - 1, col) || this.findExit(maze, row, col + 1) || this.findExit(maze, row + 1, col) || this.findExit(maze, row, col - 1)) {
+            return maze;
+        }
+
+        maze[row][col].isPath = false; // Отмечаем ячейку как непосещенную, если путь не найден
+    }
+    return maze;
+}
+
+  
 }
 module.exports = Maze;
 

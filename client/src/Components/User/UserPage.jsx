@@ -53,7 +53,7 @@ export const UserPage = () => {
                     for (let j = 0; j < maze[0].length; j++) {
                         newMap[i][j] = maze[i][j];
                         if (i === x && j === y) 
-                            newMap[i][j].isCurrent = true;
+                            newMap[i][j].isPath = true;
                     }
                 }
                 setMaze(newMap);
@@ -124,6 +124,7 @@ export const UserPage = () => {
                     setStepSolve(true);
                     setIndexPath(0);
                 }
+                // setMaze(payload.maze)
             }, rej => {
                 Show(rej, 'error', 5000, true);
             })
@@ -148,7 +149,7 @@ export const UserPage = () => {
             for (let j = 0; j < maze[0].length; j++) {
                 newMap[i][j] = maze[i][j];
                 if (i === x && j === y) 
-                    newMap[i][j].isCurrent = true;
+                    newMap[i][j].isPath = true;
             }
         }
         setMaze(newMap);
@@ -351,6 +352,13 @@ export const UserPage = () => {
                                 const length = maze.length;
                                 const width = array.width;
                                 let row = array.map((item, index) => {
+                                    if (item.isPath) {
+                                        return (
+                                            <td style={{height: heightRow, width: widthRow}} key={index + "|" + indexOuter} className="user-path" data-x={index} data-y={indexOuter} data-border={((index === 0 && indexOuter === (length - 1)) || (index === 0 && indexOuter === 0) || (index === (width - 1) && indexOuter === 0) || (index === (width - 1) && indexOuter === (maze.length - 1))) ? true : false}></td>
+                                            )
+                                    }
+
+
                                     if (item.isCurrent) {
                                         return (
                                             <td style={{height: heightRow, width: widthRow}} key={index + "|" + indexOuter} id="person" className={`current ${item.isFinish ? "wall finish" : null} ${item.isStart ? "wall start" : null}`} data-x={index} data-y={indexOuter} data-border={((index === 0 && indexOuter === (length - 1)) || (index === 0 && indexOuter === 0) || (index === (width - 1) && indexOuter === 0) || (index === (width - 1) && indexOuter === (maze.length - 1))) ? true : false}><img src={themes[theme]}></img></td>

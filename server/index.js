@@ -120,8 +120,9 @@ app.post('/validateMaze', (req, response) => {
       const payload = JSON.parse(data);
       const instanceMaze = new Maze();
       const isValid = instanceMaze.checkOnValidMaze(payload);
+      console.dir("Is valid: " + isValid);
       response.setHeader("Content-Type", "application/json");
-      response.end(JSON.stringify(isValid));
+      response.end(JSON.stringify({ isValid: isValid}));
   });
 })
 
@@ -155,7 +156,7 @@ app.post('/getPath', (req, response) => {
       const alg  = payload.alg;
       let maze = payload.maze;
       const instanceMaze = new Maze();
-      if (alg === "Алгоритм Ли") {
+      if (true || alg === "Алгоритм Ли") {
         const y = maze.length;
         const x = maze[0].length;
         const map = new Array(x);
@@ -188,9 +189,24 @@ app.post('/getPath', (req, response) => {
         const path = instanceMaze.leeAlgorithm(map, y, x, start.x, start.y, finish.x, finish.y);
         console.dir("Answer: ")
         console.dir(path);
-        maze = instanceMaze.OverlayLee(maze, path);
+        const maze1 = instanceMaze.OverlayLee(maze, path);
         response.setHeader("Content-Type", "application/json");
-        response.end(JSON.stringify({ maze: maze, path: path }));
+        response.end(JSON.stringify({ maze: maze1, path: path }));
+      } else {
+        let start = {};
+        maze.forEach((row, y) => {
+          row.forEach((cell, x) => {
+            if (cell.isStart) {
+              start = {x: x, y: y};
+            }
+          })
+        })
+        const ans = instanceMaze.setNeighbourStartFinish(maze.length, maze[0].length, start.x, start.y);
+        const nSx=ans[0][0];
+        const nSy=ans[0][1];
+        const maze1 = instanceMaze.findExit(maze, nSy, nSx);
+        response.setHeader("Content-Type", "application/json");
+        response.end(JSON.stringify({ maze: maze1 }));
       }
   });
 })
