@@ -59,16 +59,6 @@ export const UserPage = () => {
                             newMap[i][j].isPath = false;
                         else if (i === x && j === y) 
                             newMap[i][j].isPath = true;
-                        else if (pathLee) {
-                            for (let k = 0; k < pathLee.length; k++) {
-                                const currentCellPathLee = pathLee[k];
-                                const xLee = currentCellPathLee[1];
-                                const yLee = currentCellPathLee[0];
-                                if (i === xLee && j === yLee) {
-                                    newMap[i][j].isPath = true;
-                                }
-                            }
-                        }
                     }
                 }
                 setMaze(newMap);
