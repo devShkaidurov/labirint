@@ -10,7 +10,8 @@ export const RegisterPage = () => {
     const [isRegister, setIsRegister] = useState(true);
     const [login, setLogin] = useState("");
     const [pass, setPass]   = useState("");
-    const [disable, setDisable] = useState(true);
+    const [disablePass, setDisablePass] = useState(true);
+    const [disableLogin, setDisableLogin] = useState(true);
     const MINVALUE = 4;
     const MAXVALUE = 20;
     const navigate = useNavigate();
@@ -31,18 +32,18 @@ export const RegisterPage = () => {
     const handleBlurPass = (e) => {
         if (e.target.value.length > MAXVALUE || e.target.value.length < MINVALUE) {
             Show("Вы вышли за рамки ввода!", 'error', 1500, true);
-            setDisable(true);
+            setDisablePass(true);
         } else {
-            setDisable(false);
+            setDisablePass(false);
         }
     }
 
     const handleBlurLogin = (e) => {
         if (e.target.value.length > MAXVALUE || e.target.value.length < MINVALUE) {
             Show("Вы вышли за рамки ввода!", 'error', 1500, true);
-            setDisable(true)
+            setDisableLogin(true)
         } else {
-            setDisable(false);
+            setDisableLogin(false);
         }
     }
 
@@ -110,7 +111,7 @@ export const RegisterPage = () => {
                     </div>
                 </div>
                 <div id="register_actions" >
-                    <button id="register_procced" disabled={disable} onClick={handleAction}>{isRegister ? "Регистрация" : "Авторизация"}</button>
+                    <button id="register_procced" disabled={disableLogin || disablePass} onClick={handleAction}>{isRegister ? "Регистрация" : "Авторизация"}</button>
                     <button id="register_changetype" onClick={handleChangeType}>{isRegister ? "Уже есть аккаунт? Войти" : "Зарегистрироваться"}</button>
                 </div>
             </div>
