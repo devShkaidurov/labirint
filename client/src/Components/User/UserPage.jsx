@@ -30,6 +30,7 @@ export const UserPage = () => {
     const [indexPath, setIndexPath] = useState();
     const [theme, setTheme] = useState("no-theme");
     const [update, setUpdate] = useState(0);
+    const [pathLee, setPathLee] = useState();
 
     const themes = {
         "winter" : winter,
@@ -40,8 +41,10 @@ export const UserPage = () => {
 
 
     useEffect(() => {
+        console.dir(path);
         if (!path || stepSolve === true)
             return;
+        console.dir(pathLee);
         for (let index = 0; index < path.length; index++) {
             setTimeout(() => {
                 const currentCellPath = path[index];
@@ -56,6 +59,16 @@ export const UserPage = () => {
                             newMap[i][j].isPath = false;
                         else if (i === x && j === y) 
                             newMap[i][j].isPath = true;
+                        else if (pathLee) {
+                            for (let k = 0; k < pathLee.length; k++) {
+                                const currentCellPathLee = pathLee[k];
+                                const xLee = currentCellPathLee[1];
+                                const yLee = currentCellPathLee[0];
+                                if (i === xLee && j === yLee) {
+                                    newMap[i][j].isPath = true;
+                                }
+                            }
+                        }
                     }
                 }
                 setMaze(newMap);
@@ -122,6 +135,8 @@ export const UserPage = () => {
                 const payload = await res.json();
                 const path = payload.path;
                 console.dir(path);
+                if (payload.pathLee) 
+                    setPathLee(payload.pathLee);
                 setPath(path);
                 if (type === FIRST_SOLVE_TYPE) {
                     setStepSolve(true);
