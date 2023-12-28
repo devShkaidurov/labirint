@@ -3,6 +3,7 @@ import { serverConnector } from '../../serverConnector';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Show }  from '../Noty/Noty';
+import info from '../../images/info.svg';
 
 export const RegisterPage = () => {
     const connector = serverConnector();
@@ -22,6 +23,10 @@ export const RegisterPage = () => {
 
     const handleChangeLogin = (e) => {
         setLogin(e.target.value);
+    }
+
+    const handleOpenInfo = () => {
+        navigate("info");
     }
 
     const handleAction = () => {
@@ -87,6 +92,11 @@ export const RegisterPage = () => {
                     <button id="register_procced" onClick={handleAction}>{isRegister ? "Регистрация" : "Авторизация"}</button>
                     <button id="register_changetype" onClick={handleChangeType}>{isRegister ? "Уже есть аккаунт? Войти" : "Зарегистрироваться"}</button>
                 </div>
+            </div>
+            <div id='info-info'>
+                <button onClick={handleOpenInfo}>
+                    <img src={info}></img>
+                </button>
             </div>
         </div>
     )

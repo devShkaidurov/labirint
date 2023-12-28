@@ -10,7 +10,9 @@ import winter from '../../images/winter.svg';
 import spring from '../../images/spring.svg';
 import summer from '../../images/summer.svg';
 import autumn from '../../images/autumn.svg';
+import info from '../../images/info.svg';
 import Utils from '../../Utils/utils';
+import { useNavigate } from 'react-router-dom';
 
 export const UserPage = () => {
     const [maze, setMaze] = useState();
@@ -31,6 +33,7 @@ export const UserPage = () => {
     const [theme, setTheme] = useState("no-theme");
     const [update, setUpdate] = useState(0);
     const [pathLee, setPathLee] = useState();
+    const navigate = useNavigate();
 
     const themes = {
         "winter" : winter,
@@ -81,6 +84,10 @@ export const UserPage = () => {
         setMaze(JSON.parse(chooserMaze.structure));
         setName(chooserMaze.mazeName);
         setViewOptions(true);
+    }
+
+    const handleOpenUserInfo = () => {
+        navigate("/userInfo")
     }
 
     const handleChangeSolveMethod = () => {
@@ -419,6 +426,12 @@ export const UserPage = () => {
             }
 
             <Theme setTheme={setTheme}/>
+
+            <div id="user-info">
+                <div onClick={handleOpenUserInfo}>
+                    <img src={info}></img>
+                </div>
+            </div>
         </div>
     )
 }

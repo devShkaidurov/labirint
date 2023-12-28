@@ -7,243 +7,12 @@ import { serverConnector } from '../../serverConnector';
 import floppyDisk from '../../images/save.svg';
 import { SaveFormModal } from '../SaveForm/SaveForm';
 import { ConfirmFormAlg } from './ConfirmForm/ConfirmFormAlg';
+import { useNavigate } from 'react-router-dom';
+import info from '../../images/info.svg';
 
 // x = j
 // y = i
 export const AdminPage = () => {
-    const idealMaze = [
-        [
-          { isWall: false }, { isWall: true },
-          { isWall: false }, { isWall: false },
-          { isWall: false }, { isWall: false },
-          { isWall: false }, { isWall: true },
-          { isWall: false }, { isWall: false },
-          { isWall: false }, { isWall: false },
-          { isWall: false }, { isWall: false },
-          { isWall: false }, { isWall: false },
-          { isWall: false }, { isWall: true },
-          { isWall: false }
-        ],
-        [
-          { isWall: false }, { isWall: true },
-          { isWall: false }, { isWall: true },
-          { isWall: true },  { isWall: true },
-          { isWall: false }, { isWall: true },
-          { isWall: true },  { isWall: true },
-          { isWall: false }, { isWall: true },
-          { isWall: true },  { isWall: true },
-          { isWall: true },  { isWall: true },
-          { isWall: false }, { isWall: true },
-          { isWall: false }
-        ],
-        [
-          { isWall: false }, { isWall: false },
-          { isWall: false }, { isWall: true },
-          { isWall: false }, { isWall: false },
-          { isWall: false }, { isWall: true },
-          { isWall: false }, { isWall: false },
-          { isWall: false }, { isWall: true },
-          { isWall: false }, { isWall: false },
-          { isWall: false }, { isWall: true },
-          { isWall: false }, { isWall: true },
-          { isWall: false }
-        ],
-        [
-          { isWall: true },  { isWall: true },
-          { isWall: true },  { isWall: true },
-          { isWall: false }, { isWall: true },
-          { isWall: true },  { isWall: true },
-          { isWall: false }, { isWall: true },
-          { isWall: true },  { isWall: true },
-          { isWall: false }, { isWall: true },
-          { isWall: false }, { isWall: true },
-          { isWall: false }, { isWall: true },
-          { isWall: false }
-        ],
-        [
-          { isWall: false }, { isWall: true },
-          { isWall: false }, { isWall: false },
-          { isWall: false }, { isWall: true },
-          { isWall: false }, { isWall: false },
-          { isWall: false }, { isWall: true },
-          { isWall: false }, { isWall: false },
-          { isWall: false }, { isWall: true },
-          { isWall: false }, { isWall: true },
-          { isWall: false }, { isWall: false },
-          { isWall: false }
-        ],
-        [
-          { isWall: false }, { isWall: true },
-          { isWall: false }, { isWall: true },
-          { isWall: true },  { isWall: true },
-          { isWall: false }, { isWall: true },
-          { isWall: true },  { isWall: true },
-          { isWall: true },  { isWall: true },
-          { isWall: true },  { isWall: true },
-          { isWall: false }, { isWall: true },
-          { isWall: true },  { isWall: true },
-          { isWall: false }
-        ],
-        [
-          { isWall: false }, { isWall: true },
-          { isWall: false }, { isWall: false },
-          { isWall: false }, { isWall: true },
-          { isWall: false }, { isWall: true },
-          { isWall: false }, { isWall: false },
-          { isWall: false }, { isWall: false },
-          { isWall: false }, { isWall: false },
-          { isWall: false }, { isWall: false },
-          { isWall: false }, { isWall: true },
-          { isWall: false }
-        ],
-        [
-          { isWall: false }, { isWall: true },
-          { isWall: true },  { isWall: true },
-          { isWall: false }, { isWall: true },
-          { isWall: false }, { isWall: true },
-          { isWall: true },  { isWall: true },
-          { isWall: false }, { isWall: true },
-          { isWall: true },  { isWall: true },
-          { isWall: true },  { isWall: true },
-          { isWall: true },  { isWall: true },
-          { isWall: false }
-        ],
-        [
-          { isWall: false }, { isWall: true },
-          { isWall: false }, { isWall: false },
-          { isWall: false }, { isWall: true },
-          { isWall: false }, { isWall: false },
-          { isWall: false }, { isWall: true },
-          { isWall: false }, { isWall: false },
-          { isWall: false }, { isWall: true },
-          { isWall: false }, { isWall: false },
-          { isWall: false }, { isWall: false },
-          { isWall: false }
-        ],
-        [
-          { isWall: false }, { isWall: true },
-          { isWall: false }, { isWall: true },
-          { isWall: true },  { isWall: true },
-          { isWall: true },  { isWall: true },
-          { isWall: false }, { isWall: true },
-          { isWall: true },  { isWall: true },
-          { isWall: false }, { isWall: true },
-          { isWall: false }, { isWall: true },
-          { isWall: true },  { isWall: true },
-          { isWall: true }
-        ],
-        [
-          { isWall: false }, { isWall: true },
-      
-    { isWall: false }, { isWall: false },
-    { isWall: false }, { isWall: false },
-    { isWall: false }, { isWall: true },
-    { isWall: false }, { isWall: false },
-    { isWall: false }, { isWall: true },
-    { isWall: false }, { isWall: true },
-    { isWall: false }, { isWall: true },
-    { isWall: false }, { isWall: false },
-    { isWall: false }
-  ],
-  [
-    { isWall: false }, { isWall: true },
-    { isWall: true },  { isWall: true },
-    { isWall: true },  { isWall: true },
-    { isWall: false }, { isWall: true },
-    { isWall: false }, { isWall: true },
-    { isWall: false }, { isWall: true },
-    { isWall: false }, { isWall: true },
-    { isWall: false }, { isWall: true },
-    { isWall: true },  { isWall: true },
-    { isWall: false }
-  ],
-  [
-    { isWall: false }, { isWall: true },
-    { isWall: false }, { isWall: false },
-    { isWall: false }, { isWall: false },
-    { isWall: false }, { isWall: true },
-    { isWall: false }, { isWall: true },
-    { isWall: false }, { isWall: true },
-    { isWall: false }, { isWall: true },
-    { isWall: false }, { isWall: false },
-    { isWall: false }, { isWall: false },
-    { isWall: false }
-  ],
-  [
-    { isWall: false }, { isWall: true },
-    { isWall: false }, { isWall: true },
-    { isWall: true },  { isWall: true },
-    { isWall: true },  { isWall: true },
-    { isWall: true },  { isWall: true },
-    { isWall: false }, { isWall: true },
-    { isWall: false }, { isWall: true },
-    { isWall: true },  { isWall: true },
-    { isWall: true },  { isWall: true },
-    { isWall: false }
-  ],
-  [
-    { isWall: false }, { isWall: true },
-    { isWall: false }, { isWall: false },
-    { isWall: false }, { isWall: false },
-    { isWall: false }, { isWall: true },
-    { isWall: false }, { isWall: false },
-    { isWall: false }, { isWall: true },
-    { isWall: false }, { isWall: false },
-    { isWall: false }, { isWall: false },
-    { isWall: false }, { isWall: true },
-    { isWall: false }
-  ],
-  [
-    { isWall: false }, { isWall: true },
-    { isWall: true },  { isWall: true },
-    { isWall: true },  { isWall: true },
-    { isWall: false }, { isWall: true },
-    { isWall: false }, { isWall: true },
-    { isWall: true },  { isWall: true },
-    { isWall: false }, { isWall: true },
-    { isWall: true },  { isWall: true },
-    { isWall: true },  { isWall: true },
-    { isWall: false }
-  ],
-  [
-    { isWall: false }, { isWall: false },
-    { isWall: false }, { isWall: false },
-    { isWall: false }, { isWall: false },
-    { isWall: false }, { isWall: true },
-    { isWall: false }, { isWall: true },
-    { isWall: false }, { isWall: true },
-    { isWall: false }, { isWall: false },
-    { isWall: false }, { isWall: false },
-    { isWall: false }, { isWall: false },
-    { isWall: false }
-  ],
-  [
-    { isWall: false }, { isWall: true },
-    { isWall: true },  { isWall: true },
-    { isWall: true },  { isWall: true },
-    { isWall: true },  { isWall: true },
-    { isWall: false }, { isWall: true },
-    { isWall: false }, { isWall: true },
-    { isWall: false }, { isWall: true },
-    { isWall: true },  { isWall: true },
-    { isWall: true },  { isWall: true },
-    { isWall: true }
-  ],
-  [
-    { isWall: false }, { isWall: false },
-    { isWall: false }, { isWall: false },
-    { isWall: false }, { isWall: false },
-    { isWall: false }, { isWall: false },
-    { isWall: false }, { isWall: true },
-    { isWall: false }, { isWall: false },
-    { isWall: false }, { isWall: false },
-    { isWall: false }, { isWall: false },
-    { isWall: false }, { isWall: false },
-    { isWall: false }
-  ]
-]
-
-                    
     const MAXVALUE = 101;
     const MINVALUE = 9;
     const [width, setWidth] = useState(MINVALUE);
@@ -256,6 +25,7 @@ export const AdminPage = () => {
     const [activeSaveModal, setActiveSaveModal] = useState(false);
     const [nameMaze, setNameMaze] = useState();
 
+    const navigate = useNavigate();
     const initCreateMap = () => {
         const arrayMap = new Array(height);
         for (let i = 0; i < height; i++) {
@@ -1099,6 +869,10 @@ export const AdminPage = () => {
         const value = e.target.value;
         setNameMaze(value);
     }
+
+    const handleOpenAdminInfo = () => {
+        navigate("/adminInfo")
+    }
     return (
         <div id="admin_bg">
 
@@ -1236,6 +1010,12 @@ export const AdminPage = () => {
 
                 <button onClick={handleFinallySaveMaze}>Сохранить</button>
             </SaveFormModal>
+
+            <div id='admin-info'>
+                <button onClick={handleOpenAdminInfo}>
+                    <img src={info}></img>
+                </button>
+            </div>
         </div>
     )
 }
