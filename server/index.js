@@ -220,7 +220,6 @@ app.post('/getPath', (req, response) => {
             }
           })
         })
-        console.dir(map);
         const {find, path1} = instanceMaze.solveMaze(map, start, finish);
         const path = path1.map((item, index) => {
           return [item.col, item.row, index]

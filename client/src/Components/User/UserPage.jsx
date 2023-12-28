@@ -52,7 +52,9 @@ export const UserPage = () => {
                     newMap[i] = new Array(maze[0].length)
                     for (let j = 0; j < maze[0].length; j++) {
                         newMap[i][j] = maze[i][j];
-                        if (i === x && j === y) 
+                        if (i === x && j === y && maze[x][y].isPath) 
+                            newMap[i][j].isPath = false;
+                        else if (i === x && j === y) 
                             newMap[i][j].isPath = true;
                     }
                 }
@@ -347,7 +349,6 @@ export const UserPage = () => {
                     {
                         maze ?
                             maze.map((array, indexOuter) => {
-                                console.dir("Theme: " + theme)
                                 const heightRow = `${610 / maze.length}px`;
                                 const widthRow  = `${610 / array.length}px`;
                                 const length = maze.length;

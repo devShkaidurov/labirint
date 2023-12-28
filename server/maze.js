@@ -852,7 +852,7 @@ solveMaze (maze, start, finish) {
    
     // Стек для хранения позиций
     let stack = [];
-  
+    let allStack = [];
     // Массив для отслеживания посещенных точек
     let visited = Array.from({ length: rows }, () => Array(cols).fill(false));
   
@@ -865,7 +865,6 @@ solveMaze (maze, start, finish) {
   
       // Добавляем текущую позицию в массив точек решения
       solutionPath.push({ row: currentPosition.row, col: currentPosition.col });
-    //   console.dir("Point { x:" + currentPosition.row + ", y: " + currentPosition.col + " }");
   
       // Проверяем, достигли ли мы выхода из лабиринта
       if (currentPosition.row === finishPosition.row && currentPosition.col === finishPosition.col ) {
@@ -878,20 +877,54 @@ solveMaze (maze, start, finish) {
   
       // Получаем список возможных направлений
       let directions = this.getAvailableDirections(currentPosition, maze, visited);
-  
+      allStack.push({ ...currentPosition });
       if (directions.length > 0) {
         // Выбираем случайное направление из списка
         let nextDirection = directions[Math.floor(Math.random() * directions.length)];
   
+        console.dir(currentPosition);
         // Помещаем текущую позицию в стек
         stack.push({ ...currentPosition });
   
+        ///////////////////////////////////
+        const prevPos = {};
+        prevPos.row = currentPosition.row;
+        prevPos.col = currentPosition.col;
+
         // Переходим в новую позицию
         currentPosition.row += nextDirection.row;
         currentPosition.col += nextDirection.col;
+
+        // let includePos = false; 
+        // solutionPath.forEach(cell => {
+        //     console.dir(currentPosition);
+        //     if (includePos)
+        //         return;
+        //     includePos = cell.row === currentPosition.row && cell.col === currentPosition.col;
+        // })
+
+        // if (includePos) {
+        //     console.log("Add corner." + " Y: " + prevPos.row + " | X: " + prevPos.col);
+        //     solutionPath.push({ row: prevPos.row, col: prevPos.col });
+        // }
+        ///////////////////////////////////
+
       } else if (stack.length > 0) {
         // Возвращаемся к предыдущей позиции из стека
+        // delete from solutionPath last item
+        console.dir("CurrPost.x: " + currentPosition.col + " | CurrPos.y: " + currentPosition.row);
+        console.dir("ALL STACK");
+        console.dir(allStack);
+        let i = 0;
+        while ((i < allStack.length) && !(allStack[i].col == currentPosition.col && allStack[i].row == currentPosition.row))
+                i++;
+        if (i === allStack.length - 1) {
+            console.dir("Remove. CurrPost.x: " + allStack[i].col + " | CurrPos.y: " + allStack[i].row);
+            solutionPath.splice(solutionPath.length - 1, 1);
+        }
+        
         currentPosition = stack.pop();
+        
       } else {
         console.log("Выход не найден!");
         return {
@@ -914,7 +947,6 @@ solveMaze (maze, start, finish) {
     return directions.filter(dir => {
       const newRow = position.row + dir.row;
       const newCol = position.col + dir.col;
-    //   console.dir("Col: " + newCol + " | Row: " + newRow);
       return (
         newRow >= 0 &&
         newRow < maze.length &&
