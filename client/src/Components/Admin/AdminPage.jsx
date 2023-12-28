@@ -11,7 +11,239 @@ import { ConfirmFormAlg } from './ConfirmForm/ConfirmFormAlg';
 // x = j
 // y = i
 export const AdminPage = () => {
+    const idealMaze = [
+        [
+          { isWall: false }, { isWall: true },
+          { isWall: false }, { isWall: false },
+          { isWall: false }, { isWall: false },
+          { isWall: false }, { isWall: true },
+          { isWall: false }, { isWall: false },
+          { isWall: false }, { isWall: false },
+          { isWall: false }, { isWall: false },
+          { isWall: false }, { isWall: false },
+          { isWall: false }, { isWall: true },
+          { isWall: false }
+        ],
+        [
+          { isWall: false }, { isWall: true },
+          { isWall: false }, { isWall: true },
+          { isWall: true },  { isWall: true },
+          { isWall: false }, { isWall: true },
+          { isWall: true },  { isWall: true },
+          { isWall: false }, { isWall: true },
+          { isWall: true },  { isWall: true },
+          { isWall: true },  { isWall: true },
+          { isWall: false }, { isWall: true },
+          { isWall: false }
+        ],
+        [
+          { isWall: false }, { isWall: false },
+          { isWall: false }, { isWall: true },
+          { isWall: false }, { isWall: false },
+          { isWall: false }, { isWall: true },
+          { isWall: false }, { isWall: false },
+          { isWall: false }, { isWall: true },
+          { isWall: false }, { isWall: false },
+          { isWall: false }, { isWall: true },
+          { isWall: false }, { isWall: true },
+          { isWall: false }
+        ],
+        [
+          { isWall: true },  { isWall: true },
+          { isWall: true },  { isWall: true },
+          { isWall: false }, { isWall: true },
+          { isWall: true },  { isWall: true },
+          { isWall: false }, { isWall: true },
+          { isWall: true },  { isWall: true },
+          { isWall: false }, { isWall: true },
+          { isWall: false }, { isWall: true },
+          { isWall: false }, { isWall: true },
+          { isWall: false }
+        ],
+        [
+          { isWall: false }, { isWall: true },
+          { isWall: false }, { isWall: false },
+          { isWall: false }, { isWall: true },
+          { isWall: false }, { isWall: false },
+          { isWall: false }, { isWall: true },
+          { isWall: false }, { isWall: false },
+          { isWall: false }, { isWall: true },
+          { isWall: false }, { isWall: true },
+          { isWall: false }, { isWall: false },
+          { isWall: false }
+        ],
+        [
+          { isWall: false }, { isWall: true },
+          { isWall: false }, { isWall: true },
+          { isWall: true },  { isWall: true },
+          { isWall: false }, { isWall: true },
+          { isWall: true },  { isWall: true },
+          { isWall: true },  { isWall: true },
+          { isWall: true },  { isWall: true },
+          { isWall: false }, { isWall: true },
+          { isWall: true },  { isWall: true },
+          { isWall: false }
+        ],
+        [
+          { isWall: false }, { isWall: true },
+          { isWall: false }, { isWall: false },
+          { isWall: false }, { isWall: true },
+          { isWall: false }, { isWall: true },
+          { isWall: false }, { isWall: false },
+          { isWall: false }, { isWall: false },
+          { isWall: false }, { isWall: false },
+          { isWall: false }, { isWall: false },
+          { isWall: false }, { isWall: true },
+          { isWall: false }
+        ],
+        [
+          { isWall: false }, { isWall: true },
+          { isWall: true },  { isWall: true },
+          { isWall: false }, { isWall: true },
+          { isWall: false }, { isWall: true },
+          { isWall: true },  { isWall: true },
+          { isWall: false }, { isWall: true },
+          { isWall: true },  { isWall: true },
+          { isWall: true },  { isWall: true },
+          { isWall: true },  { isWall: true },
+          { isWall: false }
+        ],
+        [
+          { isWall: false }, { isWall: true },
+          { isWall: false }, { isWall: false },
+          { isWall: false }, { isWall: true },
+          { isWall: false }, { isWall: false },
+          { isWall: false }, { isWall: true },
+          { isWall: false }, { isWall: false },
+          { isWall: false }, { isWall: true },
+          { isWall: false }, { isWall: false },
+          { isWall: false }, { isWall: false },
+          { isWall: false }
+        ],
+        [
+          { isWall: false }, { isWall: true },
+          { isWall: false }, { isWall: true },
+          { isWall: true },  { isWall: true },
+          { isWall: true },  { isWall: true },
+          { isWall: false }, { isWall: true },
+          { isWall: true },  { isWall: true },
+          { isWall: false }, { isWall: true },
+          { isWall: false }, { isWall: true },
+          { isWall: true },  { isWall: true },
+          { isWall: true }
+        ],
+        [
+          { isWall: false }, { isWall: true },
+      
+    { isWall: false }, { isWall: false },
+    { isWall: false }, { isWall: false },
+    { isWall: false }, { isWall: true },
+    { isWall: false }, { isWall: false },
+    { isWall: false }, { isWall: true },
+    { isWall: false }, { isWall: true },
+    { isWall: false }, { isWall: true },
+    { isWall: false }, { isWall: false },
+    { isWall: false }
+  ],
+  [
+    { isWall: false }, { isWall: true },
+    { isWall: true },  { isWall: true },
+    { isWall: true },  { isWall: true },
+    { isWall: false }, { isWall: true },
+    { isWall: false }, { isWall: true },
+    { isWall: false }, { isWall: true },
+    { isWall: false }, { isWall: true },
+    { isWall: false }, { isWall: true },
+    { isWall: true },  { isWall: true },
+    { isWall: false }
+  ],
+  [
+    { isWall: false }, { isWall: true },
+    { isWall: false }, { isWall: false },
+    { isWall: false }, { isWall: false },
+    { isWall: false }, { isWall: true },
+    { isWall: false }, { isWall: true },
+    { isWall: false }, { isWall: true },
+    { isWall: false }, { isWall: true },
+    { isWall: false }, { isWall: false },
+    { isWall: false }, { isWall: false },
+    { isWall: false }
+  ],
+  [
+    { isWall: false }, { isWall: true },
+    { isWall: false }, { isWall: true },
+    { isWall: true },  { isWall: true },
+    { isWall: true },  { isWall: true },
+    { isWall: true },  { isWall: true },
+    { isWall: false }, { isWall: true },
+    { isWall: false }, { isWall: true },
+    { isWall: true },  { isWall: true },
+    { isWall: true },  { isWall: true },
+    { isWall: false }
+  ],
+  [
+    { isWall: false }, { isWall: true },
+    { isWall: false }, { isWall: false },
+    { isWall: false }, { isWall: false },
+    { isWall: false }, { isWall: true },
+    { isWall: false }, { isWall: false },
+    { isWall: false }, { isWall: true },
+    { isWall: false }, { isWall: false },
+    { isWall: false }, { isWall: false },
+    { isWall: false }, { isWall: true },
+    { isWall: false }
+  ],
+  [
+    { isWall: false }, { isWall: true },
+    { isWall: true },  { isWall: true },
+    { isWall: true },  { isWall: true },
+    { isWall: false }, { isWall: true },
+    { isWall: false }, { isWall: true },
+    { isWall: true },  { isWall: true },
+    { isWall: false }, { isWall: true },
+    { isWall: true },  { isWall: true },
+    { isWall: true },  { isWall: true },
+    { isWall: false }
+  ],
+  [
+    { isWall: false }, { isWall: false },
+    { isWall: false }, { isWall: false },
+    { isWall: false }, { isWall: false },
+    { isWall: false }, { isWall: true },
+    { isWall: false }, { isWall: true },
+    { isWall: false }, { isWall: true },
+    { isWall: false }, { isWall: false },
+    { isWall: false }, { isWall: false },
+    { isWall: false }, { isWall: false },
+    { isWall: false }
+  ],
+  [
+    { isWall: false }, { isWall: true },
+    { isWall: true },  { isWall: true },
+    { isWall: true },  { isWall: true },
+    { isWall: true },  { isWall: true },
+    { isWall: false }, { isWall: true },
+    { isWall: false }, { isWall: true },
+    { isWall: false }, { isWall: true },
+    { isWall: true },  { isWall: true },
+    { isWall: true },  { isWall: true },
+    { isWall: true }
+  ],
+  [
+    { isWall: false }, { isWall: false },
+    { isWall: false }, { isWall: false },
+    { isWall: false }, { isWall: false },
+    { isWall: false }, { isWall: false },
+    { isWall: false }, { isWall: true },
+    { isWall: false }, { isWall: false },
+    { isWall: false }, { isWall: false },
+    { isWall: false }, { isWall: false },
+    { isWall: false }, { isWall: false },
+    { isWall: false }
+  ]
+]
 
+                    
     const MAXVALUE = 101;
     const MINVALUE = 9;
     const [width, setWidth] = useState(MINVALUE);
@@ -772,6 +1004,7 @@ export const AdminPage = () => {
             arrayMap[el.dataset.y][el.dataset.x].isWall = true;
         })
         connector.validateMaze(arrayMap).then(async (result) => {
+            console.dir(result);
             const payload = await result.json();
             const isValid = payload.isValid;
             const saveBtn = document.getElementById("admin-floppy-disk");
@@ -794,6 +1027,7 @@ export const AdminPage = () => {
                 adminSettings.style.pointerEvents = 'all';
                 bg.className = '';
             } else {
+                console.dir("SSDSDDSDSDASSADS")
                 saveBtn.style.pointerEvents = 'none';
                 saveBtn.style.opacity = 0;
                 Show('Ваш лабиринт неверен, исправьте стенки!', 'error', 3000, true);

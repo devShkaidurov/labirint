@@ -526,7 +526,7 @@ class Maze {
     if(!kart[nSx][nSy].isWall && !kart[nFx][nFy].isWall)
     {
         console.log("готово");
-        kart[startX][startY] = { isStart: true, isPath: true};
+        kart[startX][startY] = { isStart: true};
         kart[finishX][finishY] = { isFinish: true }
         return kart;
     }else{
@@ -799,15 +799,15 @@ checkOnValidMaze (maze) {
     // Вспомогательная функция для получения непосещенных соседей
     function getUnvisitedNeighbors(row, col) {
       const neighbors = [];
-  
       if (row - 2 > 0 && !visited[row - 2][col]) neighbors.push([row - 2, col]);
       if (row + 2 < numRows - 1 && !visited[row + 2][col]) neighbors.push([row + 2, col]);
       if (col - 2 > 0 && !visited[row][col - 2]) neighbors.push([row, col - 2]);
       if (col + 2 < numCols - 1 && !visited[row][col + 2]) neighbors.push([row, col + 2]);
-  
       return neighbors;
     }
   }
+      
+
 
 doStep (map, visited, cell) {
     console.dir(visited);
@@ -839,34 +839,92 @@ isValidMove(maze, row, col) {
     const cols = maze[0].length;
     return row >= 0 && col >= 0 && row < rows && col < cols && !maze[row][col].isWall;
 }
-// Функция для поиска выхода из лабиринта
-findExit(maze, row, col) {
-    console.dir("find")
+
+solveMaze (maze, start, finish) {
     const rows = maze.length;
     const cols = maze[0].length;
-    // Если достигнута выходная ячейка
-    if (row === rows - 1 && col === cols - 1) {
-        maze[row][col].isPath = true; // Помечаем выход
-        console.log("Выход найден!");
-        return maze;
-    }
 
-    console.dir("Is valid move: " + this.isValidMove(maze, row, col));
-    // Если текущая ячейка проходима
-    if (this.isValidMove(maze, row, col)) {
-        maze[row][col].isPath = true; // Помечаем, что посетили эту ячейку
-        console.log("+1");
-        // Рекурсивный вызов для движения вверх, вправо, вниз и влево
-        if (this.findExit(maze, row - 1, col) || this.findExit(maze, row, col + 1) || this.findExit(maze, row + 1, col) || this.findExit(maze, row, col - 1)) {
-            return maze;
-        }
-
-        maze[row][col].isPath = false; // Отмечаем ячейку как непосещенную, если путь не найден
-    }
-    return maze;
-}
-
+    const neighbor = this.setNeighbourStartFinish(rows, cols, start.y, start.x, finish.y, finish.x);
   
+    // Начальная позиция (0, 0)
+    let currentPosition  = { row: neighbor[0][0], col: neighbor[0][1] };
+    const finishPosition = { row: neighbor[1][0], col: neighbor[1][1] };
+   
+    // Стек для хранения позиций
+    let stack = [];
+  
+    // Массив для отслеживания посещенных точек
+    let visited = Array.from({ length: rows }, () => Array(cols).fill(false));
+  
+    // Массив для отслеживания точек решения
+    let solutionPath = [];
+  
+    while (true) {
+      // Помечаем текущую позицию как посещенную
+      visited[currentPosition.row][currentPosition.col] = true;
+  
+      // Добавляем текущую позицию в массив точек решения
+      solutionPath.push({ row: currentPosition.row, col: currentPosition.col });
+    //   console.dir("Point { x:" + currentPosition.row + ", y: " + currentPosition.col + " }");
+  
+      // Проверяем, достигли ли мы выхода из лабиринта
+      if (currentPosition.row === finishPosition.row && currentPosition.col === finishPosition.col ) {
+        console.log("Выход найден!");
+        return {
+            find: true,
+            path1: solutionPath
+        };
+      }
+  
+      // Получаем список возможных направлений
+      let directions = this.getAvailableDirections(currentPosition, maze, visited);
+  
+      if (directions.length > 0) {
+        // Выбираем случайное направление из списка
+        let nextDirection = directions[Math.floor(Math.random() * directions.length)];
+  
+        // Помещаем текущую позицию в стек
+        stack.push({ ...currentPosition });
+  
+        // Переходим в новую позицию
+        currentPosition.row += nextDirection.row;
+        currentPosition.col += nextDirection.col;
+      } else if (stack.length > 0) {
+        // Возвращаемся к предыдущей позиции из стека
+        currentPosition = stack.pop();
+      } else {
+        console.log("Выход не найден!");
+        return {
+            find: false,
+            path1: solutionPath
+        };
+      }
+    }
+  }
+  
+  getAvailableDirections(position, maze, visited) {
+    const directions = [
+      { row: -1, col: 0 }, // Вверх
+      { row: 1, col: 0 },  // Вниз
+      { row: 0, col: -1 }, // Влево
+      { row: 0, col: 1 }   // Вправо
+    ];
+  
+    // Фильтруем направления, оставляя только те, которые ведут к проходу и не посещены
+    return directions.filter(dir => {
+      const newRow = position.row + dir.row;
+      const newCol = position.col + dir.col;
+    //   console.dir("Col: " + newCol + " | Row: " + newRow);
+      return (
+        newRow >= 0 &&
+        newRow < maze.length &&
+        newCol >= 0 &&
+        newCol < maze[0].length &&
+        maze[newRow][newCol] === 0 &&
+        !visited[newRow][newCol]
+      );
+    });
+  }
 }
 module.exports = Maze;
 

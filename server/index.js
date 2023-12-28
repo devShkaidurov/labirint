@@ -122,7 +122,7 @@ app.post('/validateMaze', (req, response) => {
       const isValid = instanceMaze.checkOnValidMaze(payload);
       console.dir("Is valid: " + isValid);
       response.setHeader("Content-Type", "application/json");
-      response.end(JSON.stringify({ isValid: isValid}));
+      response.end(JSON.stringify({isValid: isValid}));
   });
 })
 
@@ -156,7 +156,7 @@ app.post('/getPath', (req, response) => {
       const alg  = payload.alg;
       let maze = payload.maze;
       const instanceMaze = new Maze();
-      if (true || alg === "Алгоритм Ли") {
+      if (alg === "Алгоритм Ли") {
         const y = maze.length;
         const x = maze[0].length;
         const map = new Array(x);
@@ -193,20 +193,40 @@ app.post('/getPath', (req, response) => {
         response.setHeader("Content-Type", "application/json");
         response.end(JSON.stringify({ maze: maze1, path: path }));
       } else {
+        const y = maze.length;
+        const x = maze[0].length;
+        const map = new Array(x);
+        for (let k = 0; k < x; k++) {
+          map[k] = new Array(y);
+          for (let j = 0; j < y; j++)
+            map[k][j] = {};
+        }
         let start = {};
+        let finish = {};
         maze.forEach((row, y) => {
           row.forEach((cell, x) => {
+            if (cell.isWall)
+              map[y][x] = 1;
+            else 
+              map[y][x] = 0;
+
             if (cell.isStart) {
               start = {x: x, y: y};
+              map[y][x] = 1;
+            }
+            if (cell.isFinish) {
+              finish = {x: x, y: y};
+              map[y][x] = 1;
             }
           })
         })
-        const ans = instanceMaze.setNeighbourStartFinish(maze.length, maze[0].length, start.x, start.y);
-        const nSx=ans[0][0];
-        const nSy=ans[0][1];
-        const maze1 = instanceMaze.findExit(maze, nSy, nSx);
+        console.dir(map);
+        const {find, path1} = instanceMaze.solveMaze(map, start, finish);
+        const path = path1.map((item, index) => {
+          return [item.col, item.row, index]
+        })
         response.setHeader("Content-Type", "application/json");
-        response.end(JSON.stringify({ maze: maze1 }));
+        response.end(JSON.stringify({ path: path }));
       }
   });
 })

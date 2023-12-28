@@ -119,11 +119,12 @@ export const UserPage = () => {
             connector.getPath({alg: alg, maze: maze}).then( async (res) => {
                 const payload = await res.json();
                 const path = payload.path;
+                console.dir(path);
                 setPath(path);
                 if (type === FIRST_SOLVE_TYPE) {
                     setStepSolve(true);
                     setIndexPath(0);
-                }
+                } 
                 // setMaze(payload.maze)
             }, rej => {
                 Show(rej, 'error', 5000, true);
@@ -357,7 +358,6 @@ export const UserPage = () => {
                                             <td style={{height: heightRow, width: widthRow}} key={index + "|" + indexOuter} className="user-path" data-x={index} data-y={indexOuter} data-border={((index === 0 && indexOuter === (length - 1)) || (index === 0 && indexOuter === 0) || (index === (width - 1) && indexOuter === 0) || (index === (width - 1) && indexOuter === (maze.length - 1))) ? true : false}></td>
                                             )
                                     }
-
 
                                     if (item.isCurrent) {
                                         return (

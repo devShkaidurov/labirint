@@ -48,7 +48,7 @@ export const serverConnector = () => {
             .catch(e => {
                 rej(e);
             })
-            res()
+            // res(JSON.stringify({isValid: true}))
         })
     }
 
