@@ -10,6 +10,9 @@ export const RegisterPage = () => {
     const [isRegister, setIsRegister] = useState(true);
     const [login, setLogin] = useState("");
     const [pass, setPass]   = useState("");
+    const [disable, setDisable] = useState(true);
+    const MINVALUE = 4;
+    const MAXVALUE = 20;
     const navigate = useNavigate();
 
 
@@ -23,6 +26,24 @@ export const RegisterPage = () => {
 
     const handleChangeLogin = (e) => {
         setLogin(e.target.value);
+    }
+
+    const handleBlurPass = (e) => {
+        if (e.target.value.length > MAXVALUE || e.target.value.length < MINVALUE) {
+            Show("Вы вышли за рамки ввода!", 'error', 1500, true);
+            setDisable(true);
+        } else {
+            setDisable(false);
+        }
+    }
+
+    const handleBlurLogin = (e) => {
+        if (e.target.value.length > MAXVALUE || e.target.value.length < MINVALUE) {
+            Show("Вы вышли за рамки ввода!", 'error', 1500, true);
+            setDisable(true)
+        } else {
+            setDisable(false);
+        }
     }
 
     const handleOpenInfo = () => {
@@ -81,15 +102,15 @@ export const RegisterPage = () => {
                 <div id="register_main">
                     <div id="register_login_form">
                         <span>Логин</span>
-                        <input type="text" onChange={handleChangeLogin}></input>
+                        <input type="text" onBlur={handleBlurLogin} onChange={handleChangeLogin}></input>
                     </div>
                     <div id="register_pass_form">
                         <span>Пароль</span>
-                        <input type="password" onChange={handleChangePass}></input>
+                        <input type="password" onBlur={handleBlurPass} onChange={handleChangePass}></input>
                     </div>
                 </div>
-                <div id="register_actions">
-                    <button id="register_procced" onClick={handleAction}>{isRegister ? "Регистрация" : "Авторизация"}</button>
+                <div id="register_actions" >
+                    <button id="register_procced" disabled={disable} onClick={handleAction}>{isRegister ? "Регистрация" : "Авторизация"}</button>
                     <button id="register_changetype" onClick={handleChangeType}>{isRegister ? "Уже есть аккаунт? Войти" : "Зарегистрироваться"}</button>
                 </div>
             </div>
